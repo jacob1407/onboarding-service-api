@@ -13,3 +13,4 @@ typing_extensions==4.13.1
 uvicorn==0.34.0
 sqlalchemy==2.0.40
 psycopg2-binary
+alembic==1.15.2

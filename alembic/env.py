@@ -23,6 +23,7 @@ from src.models import (
     templates_model,
     application_model,
     role_templates_model,
+    template_applications,
 )  # import models to reflect schema
 
 # Alembic config

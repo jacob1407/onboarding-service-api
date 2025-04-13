@@ -3,13 +3,13 @@ from pydantic import BaseModel
 from typing import Optional, List
 
 
-class RoleIn(BaseModel):
+class CreateRoleRequestModel(BaseModel):
     name: str
     display_name: str
     template_ids: Optional[List[str]] = None
 
 
-class RoleOut(RoleIn):
+class GetRolesResponseModel(CreateRoleRequestModel):
     id: UUID
 
     class Config:

@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from ..models.roles_model import RoleModel
+from ..models.role_model import RoleModel
 
 
 def create_role(db: Session, name: str, display_name: str) -> RoleModel:

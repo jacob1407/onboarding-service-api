@@ -4,8 +4,8 @@ from sqlalchemy.dialects.postgresql import UUID
 from ..db import Base
 
 
-class UserModel(Base):
-    __tablename__ = "users"
+class AdminModel(Base):
+    __tablename__ = "admins"
 
     id = Column(
         UUID(as_uuid=True),
@@ -14,10 +14,10 @@ class UserModel(Base):
         unique=True,
         nullable=False,
     )
+    username = Column(String, nullable=False, unique=True)
     first_name = Column(String, nullable=False)
     last_name = Column(String, nullable=False)
     email = Column(String, nullable=False, unique=True)
-    role_id = Column(UUID(as_uuid=True), ForeignKey("roles.id"), nullable=False)
     organisation_id = Column(
         UUID(as_uuid=True), ForeignKey("organisations.id"), nullable=False
     )

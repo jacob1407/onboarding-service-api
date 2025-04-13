@@ -14,7 +14,14 @@ load_dotenv()
 sys.path.append(os.path.abspath(os.path.join(os.getcwd(), "src")))
 
 from src.db import Base
-from src.models import roles_model, user_model  # import models to reflect schema
+from src.models import (
+    roles_model,
+    user_model,
+    organisation_model,
+    admin_model,
+    contacts_model,
+    templates_model,
+)  # import models to reflect schema
 
 # Alembic config
 config = context.config

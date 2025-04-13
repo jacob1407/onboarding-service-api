@@ -14,7 +14,7 @@ load_dotenv()
 sys.path.append(os.path.abspath(os.path.join(os.getcwd(), "src")))
 
 from src.db import Base
-from src.models import new_hire_model, role_model  # import models to reflect schema
+from src.models import new_hire_model, roles_model  # import models to reflect schema
 
 # Alembic config
 config = context.config
@@ -34,6 +34,7 @@ if config.config_file_name is not None:
 
 target_metadata = Base.metadata
 
+
 # Offline migration mode
 def run_migrations_offline():
     context.configure(
@@ -45,6 +46,7 @@ def run_migrations_offline():
 
     with context.begin_transaction():
         context.run_migrations()
+
 
 # Online migration mode
 def run_migrations_online():
@@ -59,6 +61,7 @@ def run_migrations_online():
 
         with context.begin_transaction():
             context.run_migrations()
+
 
 # Run appropriate mode
 if context.is_offline_mode():

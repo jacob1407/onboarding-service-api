@@ -1,10 +1,20 @@
-from sqlalchemy import Column, Integer, String
+from uuid import uuid4
+from sqlalchemy import Column, String, ForeignKey
+from sqlalchemy.dialects.postgresql import UUID
 from ..db import Base
+
 
 class NewHire(Base):
     __tablename__ = "new_hires"
 
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False)
+    id = Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid4,
+        unique=True,
+        nullable=False,
+    )
+    first_name = Column(String, nullable=False)
+    last_name = Column(String, nullable=False)
     email = Column(String, nullable=False, unique=True)
-    role = Column(String, nullable=False)
+    role_id = Column(UUID(as_uuid=True), ForeignKey("roles.id"), nullable=False)

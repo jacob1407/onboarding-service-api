@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   db:
     image: postgres:15
@@ -8,16 +6,14 @@ services:
       POSTGRES_USER: myuser
       POSTGRES_PASSWORD: mypassword
       POSTGRES_DB: onboarding
-    volumes:
-      - pgdata:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
 
-  api:
+  onboarding-service-api:
     build: .
     container_name: onboarding-service-api
-    ports:
-      - "8080:8080"
     depends_on:
       - db
     environment:
@@ -26,6 +22,8 @@ services:
       DB_NAME: onboarding
       DB_USER: myuser
       DB_PASS: mypassword
+    ports:
+      - "8080:8080"
 
 volumes:
   pgdata:

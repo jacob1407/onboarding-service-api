@@ -4,8 +4,8 @@ from sqlalchemy.dialects.postgresql import UUID
 from ..db import Base
 
 
-class UserModel(Base):
-    __tablename__ = "users"
+class EmployeeModel(Base):
+    __tablename__ = "employees"
 
     id = Column(
         UUID(as_uuid=True),

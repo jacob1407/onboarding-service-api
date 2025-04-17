@@ -7,10 +7,14 @@ class CreateRoleRequestModel(BaseModel):
     name: str
     display_name: str
     template_ids: Optional[List[str]] = None
+    organisation_id: UUID
 
 
 class GetRolesResponseModel(CreateRoleRequestModel):
     id: UUID
+    name: str
+    display_name: str
+    template_ids: Optional[List[str]] = None
+    organisation_id: UUID
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}

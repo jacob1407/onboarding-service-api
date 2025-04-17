@@ -14,5 +14,5 @@ class OrganisationModel(Base):
         unique=True,
         nullable=False,
     )
-    name = Column(String, nullable=False)
+    name = Column(String, nullable=False, unique=True)
     contact_emails = Column(String, nullable=False)

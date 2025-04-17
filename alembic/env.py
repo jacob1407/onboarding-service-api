@@ -13,19 +13,18 @@ load_dotenv()
 # ✅ Add src/ to path so we can import from src.db
 sys.path.append(os.path.abspath(os.path.join(os.getcwd(), "src")))
 
-from models import (
+
+from src.db import Base
+from src.models import (
+    organisation_model,
+    admin_model,
+    application_model,
     contact_model,
+    employee_model,
     role_model,
     role_template_model,
     template_application,
     template_model,
-)
-from src.db import Base
-from src.models import (
-    user_model,
-    organisation_model,
-    admin_model,
-    application_model,
 )  # import models to reflect schema
 
 # Alembic config

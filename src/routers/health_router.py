@@ -1,8 +1,8 @@
 from fastapi import APIRouter
 
-app = APIRouter()
+router = APIRouter()
 
 
-@app.get("/")
+@router.get("/")
 def health():
     return {"status": "ok"}

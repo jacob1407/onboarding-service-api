@@ -1,20 +1,19 @@
 from uuid import UUID
 from pydantic import BaseModel
-from typing import Optional, List
+from typing import List
 
 
 class CreateRoleRequestModel(BaseModel):
     name: str
-    display_name: str
-    template_ids: Optional[List[str]] = None
+    template_ids: List[str]
     organisation_id: UUID
 
 
-class GetRolesResponseModel(CreateRoleRequestModel):
+class GetRolesResponseModel(BaseModel):
     id: UUID
     name: str
     display_name: str
-    template_ids: Optional[List[str]] = None
+    template_ids: List[str]
     organisation_id: UUID
 
     model_config = {"from_attributes": True}

@@ -5,10 +5,10 @@ from ..db import get_db
 from ..services.organisation_service import OrganisationService
 from ..schemas.organisation_schema import CreateOrganisationRequestModel
 
-app = APIRouter()
+router = APIRouter()
 
 
-@app.post("/")
+@router.post("/")
 def create_organisation(
     organisation: CreateOrganisationRequestModel, db: Session = Depends(get_db)
 ):

@@ -1,8 +1,8 @@
 from .routers.employees_router import router as employees_router
-from .routers.roles_router import app as roles_router
-from .routers.health_router import app as health_router
-from .routers.organisation_router import app as organisations_router
-from .routers.templates_router import app as templates_router
+from .routers.roles_router import router as roles_router
+from .routers.health_router import router as health_router
+from .routers.organisation_router import router as organisations_router
+from .routers.templates_router import router as templates_router
 
 from fastapi import FastAPI
 

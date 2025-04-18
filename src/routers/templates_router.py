@@ -17,20 +17,20 @@ def create_template(
     template: CreateTemplateRequestModel,
     db: Session = Depends(get_db),
 ):
-    service = TemplateService()
+    service = TemplateService(db)
     try:
-        return service.create_template(db, template)
+        return service.create_template(template)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
 
 @router.get("/", response_model=list[GetTemplateReturnModel])
 def list_templates(
-    org_id: UUID,
+    organisation_id: UUID,
     db: Session = Depends(get_db),
 ):
-    service = TemplateService()
-    return service.get_templates_by_org(db, org_id)
+    service = TemplateService(db)
+    return service.get_templates_by_org(organisation_id)
 
 
 @router.put("/{template_id}", response_model=GetTemplateReturnModel)
@@ -39,8 +39,8 @@ def update_template(
     updated_data: CreateTemplateRequestModel,
     db: Session = Depends(get_db),
 ):
-    service = TemplateService()
-    return service.update_template(db, template_id, updated_data)
+    service = TemplateService(db)
+    return service.update_template(template_id, updated_data)
 
 
 @router.delete("/{template_id}")
@@ -48,6 +48,6 @@ def delete_template(
     template_id: UUID,
     db: Session = Depends(get_db),
 ):
-    service = TemplateService()
-    service.delete_template(db, template_id)
+    service = TemplateService(db)
+    service.delete_template(template_id)
     return {"detail": "Template deleted successfully."}

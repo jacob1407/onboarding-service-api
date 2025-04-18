@@ -1,18 +1,27 @@
+from uuid import UUID
 from sqlalchemy.orm import Session
 from ..models.role_model import RoleModel
 
 
-def create_role(db: Session, name: str, display_name: str) -> RoleModel:
-    role = RoleModel(name=name, display_name=display_name)
-    db.add(role)
-    db.commit()
-    db.refresh(role)
-    return role
+class RolesDAO:
+    def __init__(self, db: Session):
+        self.db = db
 
+    def create_role(
+        self, name: str, display_name: str, organisation_id: UUID
+    ) -> RoleModel:
+        role = RoleModel(
+            name=name, display_name=display_name, organisation_id=organisation_id
+        )
+        self.db.add(role)
+        self.db.commit()
+        self.db.refresh(role)
+        return role
 
-def get_all_roles(db: Session) -> list[RoleModel]:
-    return db.query(RoleModel).all()
+    def get_all_roles_by_org_id(self, org_id: str) -> list[RoleModel]:
+        return (
+            self.db.query(RoleModel).filter(RoleModel.organisation_id == org_id).all()
+        )
 
-
-def get_role_by_id(db: Session, role_id) -> RoleModel | None:
-    return db.query(RoleModel).filter(RoleModel.id == role_id).first()
+    def get_role_by_id(self, role_id: str) -> RoleModel | None:
+        return self.db.query(RoleModel).filter(RoleModel.id == role_id).first()

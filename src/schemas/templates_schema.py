@@ -4,8 +4,8 @@ from uuid import UUID
 
 class CreateTemplateRequestModel(BaseModel):
     name: str
-    display_name: str
     organisation_id: UUID
+    application_ids: list[UUID]
 
 
 class GetTemplateReturnModel(BaseModel):
@@ -13,6 +13,6 @@ class GetTemplateReturnModel(BaseModel):
     name: str
     display_name: str
     organisation_id: UUID
+    application_ids: list[UUID]
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}

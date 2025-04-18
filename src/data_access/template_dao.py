@@ -1,39 +1,46 @@
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import NoResultFound
 from ..models.template_model import TemplateModel
-from ..schemas.templates_schema import CreateTemplateRequestModel
 from uuid import UUID, uuid4
 
 
 class TemplateDAO:
+    def __init__(self, db: Session):
+        self.db = db
+
     def create(
-        self, db: Session, template_data: CreateTemplateRequestModel
+        self, name: str, display_name: str, organisation_id: UUID
     ) -> TemplateModel:
         new_template = TemplateModel(
             id=uuid4(),
-            name=template_data.name,
-            display_name=template_data.display_name,
-            organisation_id=template_data.organisation_id,
+            name=name,
+            display_name=display_name,
+            organisation_id=organisation_id,
         )
-        db.add(new_template)
-        db.commit()
-        db.refresh(new_template)
+        self.db.add(new_template)
+        self.db.commit()
+        self.db.refresh(new_template)
         return new_template
 
-    def get_by_org(self, db: Session, org_id: UUID) -> list[TemplateModel]:
-        return db.query(TemplateModel).filter_by(organisation_id=org_id).all()
+    def get_by_org(self, org_id: UUID) -> list[TemplateModel]:
+        return self.db.query(TemplateModel).filter_by(organisation_id=org_id).all()
 
     def update(
-        self, db: Session, template_id: UUID, data: CreateTemplateRequestModel
+        self, template_id: UUID, name: str, display_name: str, org_id: UUID
     ) -> TemplateModel:
-        template = db.query(TemplateModel).filter_by(id=template_id).one_or_none()
-        template.name = data.name
-        template.display_name = data.display_name
-        template.organisation_id = data.organisation_id
-        db.commit()
-        db.refresh(template)
+        template = self.db.query(TemplateModel).filter_by(id=template_id).one_or_none()
+        if not template:
+            raise NoResultFound(f"Template {template_id} not found")
+        template.name = name
+        template.display_name = display_name
+        template.organisation_id = org_id
+        self.db.commit()
+        self.db.refresh(template)
         return template
 
-    def delete(self, db: Session, template_id: UUID) -> None:
-        template = db.query(TemplateModel).filter_by(id=template_id).one_or_none()
-        db.delete(template)
-        db.commit()
+    def delete(self, template_id: UUID) -> None:
+        template = self.db.query(TemplateModel).filter_by(id=template_id).one_or_none()
+        if not template:
+            raise NoResultFound(f"Template {template_id} not found")
+        self.db.delete(template)
+        self.db.commit()

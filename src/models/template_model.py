@@ -14,7 +14,7 @@ class TemplateModel(Base):
         unique=True,
         nullable=False,
     )
-    name = Column(String, nullable=False, unique=True)
+    name = Column(String, nullable=False, unique=False)
     display_name = Column(String, nullable=False)
     organisation_id = Column(
         UUID(as_uuid=True), ForeignKey("organisations.id"), nullable=False

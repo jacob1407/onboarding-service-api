@@ -1,4 +1,6 @@
 from sqlalchemy.orm import Session
+
+from ..services.utils import to_snake_case
 from ..models.application_model import ApplicationModel
 from ..schemas.applications_schema import CreateApplicationRequestModel
 import uuid
@@ -13,8 +15,9 @@ class ApplicationsDAO:
         app = ApplicationModel(
             id=uuid.uuid4(),
             name=data.name,
-            display_name=data.display_name,
+            display_name=to_snake_case(data.name),
             organisation_id=data.organisation_id,
+            description=data.description,
         )
         self.db.add(app)
         self.db.commit()

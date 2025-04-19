@@ -7,6 +7,7 @@ class CreateApplicationRequestModel(BaseModel):
     name: str
     organisation_id: UUID
     description: Optional[str] = None
+    contact_ids: list[UUID]
 
     @computed_field
     @property
@@ -20,5 +21,6 @@ class GetApplicationResponseModel(BaseModel):
     code: str
     organisation_id: UUID
     description: Optional[str] = None
+    contact_ids: list[UUID]
 
     model_config = {"from_attributes": True}

@@ -1,4 +1,6 @@
 from sqlalchemy.orm import Session
+
+from ..services.application_contacts_service import ApplicationContactsService
 from ..schemas.applications_schema import (
     CreateApplicationRequestModel,
     GetApplicationResponseModel,
@@ -11,12 +13,25 @@ from uuid import UUID
 class ApplicationService:
     def __init__(self, db: Session):
         self.dao = ApplicationsDAO(db)
+        self.application_contacts_service = ApplicationContactsService(db)
 
     def create_application(
         self, data: CreateApplicationRequestModel
     ) -> GetApplicationResponseModel:
         app = self.dao.create(data)
-        return GetApplicationResponseModel.model_validate(app)
+        if data.contact_ids:
+            self.application_contacts_service.associate_contacts_to_application(
+                app.id, data.contact_ids
+            )
+
+        return GetApplicationResponseModel(
+            id=app.id,
+            name=app.name,
+            code=app.code,
+            organisation_id=app.organisation_id,
+            description=app.description,
+            contact_ids=data.contact_ids,
+        )
 
     def get_applications_by_org_id(
         self, org_id: UUID

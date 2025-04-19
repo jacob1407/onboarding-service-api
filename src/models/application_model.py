@@ -16,7 +16,7 @@ class ApplicationModel(Base):
     )
     name = Column(String, nullable=False, unique=False)
     description = Column(String, nullable=True)
-    display_name = Column(String, nullable=False)
+    code = Column(String, nullable=False)
     organisation_id = Column(
         UUID(as_uuid=True), ForeignKey("organisations.id"), nullable=False
     )

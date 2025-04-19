@@ -5,14 +5,15 @@ from uuid import UUID
 from ..db import get_db
 from ..schemas.templates_schema import (
     CreateTemplateRequestModel,
-    GetTemplateReturnModel,
+    TemplateResponseModel,
+    UpdateTemplateRequestModel,
 )
 from ..services.templates_service import TemplateService
 
 router = APIRouter()
 
 
-@router.post("/", response_model=GetTemplateReturnModel)
+@router.post("/", response_model=TemplateResponseModel)
 def create_template(
     template: CreateTemplateRequestModel,
     db: Session = Depends(get_db),
@@ -24,7 +25,7 @@ def create_template(
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.get("/", response_model=list[GetTemplateReturnModel])
+@router.get("/", response_model=list[TemplateResponseModel])
 def list_templates(
     organisation_id: UUID,
     db: Session = Depends(get_db),
@@ -33,10 +34,10 @@ def list_templates(
     return service.get_templates_by_org(organisation_id)
 
 
-@router.put("/{template_id}", response_model=GetTemplateReturnModel)
+@router.put("/{template_id}", response_model=TemplateResponseModel)
 def update_template(
     template_id: UUID,
-    updated_data: CreateTemplateRequestModel,
+    updated_data: UpdateTemplateRequestModel,
     db: Session = Depends(get_db),
 ):
     service = TemplateService(db)

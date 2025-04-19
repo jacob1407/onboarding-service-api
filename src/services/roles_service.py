@@ -4,7 +4,6 @@ from ..services.utils import to_snake_case
 from ..data_access.roles_dao import RolesDAO
 from ..services.role_templates_service import RoleTemplateService
 from ..schemas.roles_schema import CreateRoleRequestModel, GetRolesResponseModel
-from ..models.role_model import RoleModel
 
 
 class RolesService:
@@ -13,9 +12,7 @@ class RolesService:
         self.role_template_service = RoleTemplateService(db)
 
     def create_role(self, data: CreateRoleRequestModel) -> GetRolesResponseModel:
-        role = self.dao.create_role(
-            data.name, to_snake_case(data.name), data.organisation_id
-        )
+        role = self.dao.create_role(data)
 
         if len(data.template_ids) > 0:
             self.role_template_service.associate_templates_to_role(
@@ -25,7 +22,7 @@ class RolesService:
         return GetRolesResponseModel(
             id=role.id,
             name=role.name,
-            display_name=role.display_name,
+            code=role.code,
             template_ids=data.template_ids,
             organisation_id=role.organisation_id,
         )
@@ -36,4 +33,15 @@ class RolesService:
 
     def get_role_by_id(self, role_id: str) -> GetRolesResponseModel | None:
         role = self.dao.get_role_by_id(role_id)
-        return GetRolesResponseModel.model_validate(role) if role else None
+        if not role:
+            return None
+
+        template_ids = self.role_template_service.get_template_ids_for_role(role_id)
+        response = GetRolesResponseModel(
+            id=role.id,
+            name=role.name,
+            code=role.code,
+            organisation_id=role.organisation_id,
+            template_ids=template_ids,
+        )
+        return response

@@ -14,6 +14,7 @@ load_dotenv()
 sys.path.append(os.path.abspath(os.path.join(os.getcwd(), "src")))
 
 
+from models import template_application_model
 from src.db import Base
 from src.models import (
     organisation_model,
@@ -23,7 +24,6 @@ from src.models import (
     employee_model,
     role_model,
     role_template_model,
-    template_application,
     template_model,
 )  # import models to reflect schema
 

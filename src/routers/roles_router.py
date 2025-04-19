@@ -14,9 +14,9 @@ def create_role(data: CreateRoleRequestModel, db: Session = Depends(get_db)):
 
 
 @router.get("/", response_model=list[GetRolesResponseModel])
-def get_roles(org_id: str, db: Session = Depends(get_db)):
+def get_roles(organisation_id: str, db: Session = Depends(get_db)):
     service = RolesService(db)
-    return service.get_all_roles_by_org_id(org_id)
+    return service.get_all_roles_by_org_id(organisation_id)
 
 
 @router.get("/{role_id}", response_model=GetRolesResponseModel)

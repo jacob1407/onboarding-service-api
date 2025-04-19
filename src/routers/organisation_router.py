@@ -1,9 +1,13 @@
-from fastapi import APIRouter, Depends
+from uuid import UUID
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from ..db import get_db
 from ..services.organisation_service import OrganisationService
-from ..schemas.organisation_schema import CreateOrganisationRequestModel
+from ..schemas.organisation_schema import (
+    CreateOrganisationRequestModel,
+    GetOrganisationResponseModel,
+)
 
 router = APIRouter()
 
@@ -14,3 +18,12 @@ def create_organisation(
 ):
     service = OrganisationService(db)
     return service.create_organisation(organisation)
+
+
+@router.get("/{org_id}", response_model=GetOrganisationResponseModel)
+def get_organisation(org_id: UUID, db: Session = Depends(get_db)):
+    service = OrganisationService(db)
+    org = service.get_organisation_by_id(org_id)
+    if not org:
+        raise HTTPException(status_code=404, detail="Organisation not found")
+    return org

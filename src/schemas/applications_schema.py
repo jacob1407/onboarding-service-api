@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, computed_field
 from uuid import UUID
 from typing import Optional
 
@@ -8,11 +8,16 @@ class CreateApplicationRequestModel(BaseModel):
     organisation_id: UUID
     description: Optional[str] = None
 
+    @computed_field
+    @property
+    def code(self) -> str:
+        return self.name.lower().replace(" ", "_")
+
 
 class GetApplicationResponseModel(BaseModel):
     id: UUID
     name: str
-    display_name: str
+    code: str
     organisation_id: UUID
     description: Optional[str] = None
 

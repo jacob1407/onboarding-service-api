@@ -1,5 +1,7 @@
 from uuid import UUID
 from sqlalchemy.orm import Session
+
+from ..schemas.roles_schema import CreateRoleRequestModel
 from ..models.role_model import RoleModel
 
 
@@ -7,11 +9,11 @@ class RolesDAO:
     def __init__(self, db: Session):
         self.db = db
 
-    def create_role(
-        self, name: str, display_name: str, organisation_id: UUID
-    ) -> RoleModel:
+    def create_role(self, role: CreateRoleRequestModel) -> RoleModel:
         role = RoleModel(
-            name=name, display_name=display_name, organisation_id=organisation_id
+            name=role.name,
+            code=role.code,
+            organisation_id=role.organisation_id,
         )
         self.db.add(role)
         self.db.commit()

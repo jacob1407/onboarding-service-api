@@ -15,7 +15,7 @@ class ApplicationsDAO:
         app = ApplicationModel(
             id=uuid.uuid4(),
             name=data.name,
-            display_name=to_snake_case(data.name),
+            code=to_snake_case(data.name),
             organisation_id=data.organisation_id,
             description=data.description,
         )

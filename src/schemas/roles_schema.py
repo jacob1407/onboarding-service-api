@@ -18,7 +18,6 @@ class GetRolesResponseModel(BaseModel):
     id: UUID
     name: str
     code: str
-    template_ids: List[UUID]
-    organisation_id: UUID
+    application_ids: List[UUID]
 
     model_config = {"from_attributes": True}

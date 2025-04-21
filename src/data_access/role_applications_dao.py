@@ -1,0 +1,23 @@
+from uuid import UUID
+from sqlalchemy.orm import Session
+from ..models.role_application_model import RoleApplicationModel
+
+
+class RoleApplicationDAO:
+    def __init__(self, db: Session):
+        self.db = db
+
+    def create(self, role_id: UUID, application_id: UUID) -> RoleApplicationModel:
+        record = RoleApplicationModel(role_id=role_id, application_id=application_id)
+        self.db.add(record)
+        self.db.commit()
+        self.db.refresh(record)
+        return record
+
+    def get_applications_by_role_id(self, role_id: UUID) -> list[UUID]:
+        return [
+            r.application_id
+            for r in self.db.query(RoleApplicationModel)
+            .filter_by(role_id=role_id)
+            .all()
+        ]

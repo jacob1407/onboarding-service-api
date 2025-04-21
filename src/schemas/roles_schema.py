@@ -18,6 +18,5 @@ class GetRolesResponseModel(BaseModel):
     id: UUID
     name: str
     code: str
-    application_ids: List[UUID]
 
     model_config = {"from_attributes": True}

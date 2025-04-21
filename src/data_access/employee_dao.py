@@ -7,12 +7,7 @@ class EmployeeDataAccess:
     def __init__(self, db: Session):
         self._db = db
 
-    def insert_employee(
-        self, first_name: str, last_name: str, email: str, role_id: UUID
-    ) -> EmployeeModel:
-        employee = EmployeeModel(
-            first_name=first_name, last_name=last_name, email=email, role_id=role_id
-        )
+    def insert_employee(self, employee: EmployeeModel) -> EmployeeModel:
         self._db.add(employee)
         self._db.commit()
         self._db.refresh(employee)
@@ -27,5 +22,7 @@ class EmployeeDataAccess:
 
     def get_employees_by_org_id(self, org_id: UUID) -> list[EmployeeModel]:
         return (
-            self._db.query(EmployeeModel).filter(EmployeeModel.org_id == org_id).all()
+            self._db.query(EmployeeModel)
+            .filter(EmployeeModel.organisation_id == org_id)
+            .all()
         )

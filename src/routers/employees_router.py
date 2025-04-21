@@ -21,17 +21,15 @@ def create_employee(
     data: CreateEmployeeRequestModel,
     service: EmployeeService = Depends(get_employee_service),
 ):
-    result = service.create_employee(
-        data.first_name, data.last_name, data.email, data.role_id
-    )
-    return {"message": "New user created", "id": result.id}
+    result = service.create_employee(data)
+    return result
 
 
-@router.get("/{user_id}", response_model=GetEmployeeResponseModel)
+@router.get("/{employee_id}", response_model=GetEmployeeResponseModel)
 def get_employee(
-    user_id: int, service: EmployeeService = Depends(get_employee_service)
+    employee_id: int, service: EmployeeService = Depends(get_employee_service)
 ):
-    user = service.get_employee(user_id)
+    user = service.get_employee(employee_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     return user
@@ -39,6 +37,7 @@ def get_employee(
 
 @router.get("/", response_model=list[GetEmployeeResponseModel])
 def get_employees(
-    org_id: UUID = Query(...), service: EmployeeService = Depends(get_employee_service)
+    organisation_id: UUID = Query(...),
+    service: EmployeeService = Depends(get_employee_service),
 ):
-    return service.get_employees_by_org_id(org_id)
+    return service.get_employees_by_org_id(organisation_id)

@@ -5,6 +5,7 @@ from .routers.organisation_router import router as organisations_router
 from .routers.applications_router import router as applications_router
 from .routers.contacts_router import router as contacts_router
 
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
 
 app = FastAPI()
@@ -15,3 +16,13 @@ app.include_router(health_router, prefix="/health")
 app.include_router(organisations_router, prefix="/organisations")
 app.include_router(applications_router, prefix="/applications")
 app.include_router(contacts_router, prefix="/contacts")
+
+origins = ["http://localhost:3000", "http://127.0.0.1:3000"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,  # <-- only allow frontend origin
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)

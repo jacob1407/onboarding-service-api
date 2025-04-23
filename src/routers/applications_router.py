@@ -20,9 +20,9 @@ def create_application(
 
 
 @router.get("/", response_model=list[GetApplicationResponseModel])
-def get_applications(org_id: UUID, db: Session = Depends(get_db)):
+def get_applications(organisation_id: UUID, db: Session = Depends(get_db)):
     service = ApplicationService(db)
-    return service.get_applications_by_org_id(org_id)
+    return service.get_applications_by_org_id(organisation_id)
 
 
 @router.get("/{app_id}", response_model=GetApplicationResponseModel)

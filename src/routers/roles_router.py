@@ -1,6 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from ..schemas.roles_schema import CreateRoleRequestModel, GetRolesResponseModel
+from ..schemas.roles_schema import (
+    CreateRoleRequestModel,
+    GetRoleResponseModel,
+    GetRolesResponseModel,
+)
 from ..services.roles_service import RolesService
 from ..db import get_db
 
@@ -19,7 +23,7 @@ def get_roles(organisation_id: str, db: Session = Depends(get_db)):
     return service.get_all_roles_by_org_id(organisation_id)
 
 
-@router.get("/{role_id}", response_model=GetRolesResponseModel)
+@router.get("/{role_id}", response_model=GetRoleResponseModel)
 def get_role(role_id: str, db: Session = Depends(get_db)):
     service = RolesService(db)
     role = service.get_role_by_id(role_id)

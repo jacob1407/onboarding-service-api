@@ -1,7 +1,11 @@
 from sqlalchemy.orm import Session
 from ..data_access.roles_dao import RolesDAO
 from ..services.role_applications_service import RoleApplicationsService
-from ..schemas.roles_schema import CreateRoleRequestModel, GetRolesResponseModel
+from ..schemas.roles_schema import (
+    CreateRoleRequestModel,
+    GetRoleResponseModel,
+    GetRolesResponseModel,
+)
 
 
 class RolesService:
@@ -12,16 +16,17 @@ class RolesService:
     def create_role(self, data: CreateRoleRequestModel) -> GetRolesResponseModel:
         role = self.dao.create_role(data)
 
-        if len(data.template_ids) > 0:
+        if len(data.application_ids) > 0:
             self.role_application_service.associate_applications_to_role(
-                role.id, data.template_ids
+                role.id, data.application_ids
             )
 
         return GetRolesResponseModel(
             id=role.id,
             name=role.name,
             code=role.code,
-            application_ids=data.template_ids,
+            application_ids=data.application_ids,
+            description=role.description,
             organisation_id=role.organisation_id,
         )
 
@@ -34,12 +39,14 @@ class RolesService:
         if not role:
             return None
 
-        template_ids = self.role_template_service.get_template_ids_for_role(role_id)
-        response = GetRolesResponseModel(
+        application_ids = self.role_application_service.get_application_ids_for_role(
+            role_id
+        )
+        response = GetRoleResponseModel(
             id=role.id,
             name=role.name,
             code=role.code,
             organisation_id=role.organisation_id,
-            application_ids=template_ids,
+            application_ids=application_ids,
         )
         return response

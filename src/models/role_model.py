@@ -16,6 +16,7 @@ class RoleModel(Base):
     )
     name = Column(String, nullable=False, unique=False)
     code = Column(String, nullable=False)
+    description = Column(String, nullable=True)
     organisation_id = Column(
         UUID(as_uuid=True), ForeignKey("organisations.id"), nullable=False
     )

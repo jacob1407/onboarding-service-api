@@ -14,6 +14,7 @@ class RolesDAO:
             name=role.name,
             code=role.code,
             organisation_id=role.organisation_id,
+            description=role.description,
         )
         self.db.add(role)
         self.db.commit()

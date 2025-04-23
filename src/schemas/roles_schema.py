@@ -5,8 +5,9 @@ from typing import List
 
 class CreateRoleRequestModel(BaseModel):
     name: str
-    template_ids: List[str]
+    application_ids: List[UUID]
     organisation_id: UUID
+    description: str | None = None
 
     @computed_field
     @property
@@ -18,5 +19,15 @@ class GetRolesResponseModel(BaseModel):
     id: UUID
     name: str
     code: str
+    description: str | None
+
+    model_config = {"from_attributes": True}
+
+
+class GetRoleResponseModel(BaseModel):
+    id: UUID
+    name: str
+    code: str
+    application_ids: List[UUID]
 
     model_config = {"from_attributes": True}

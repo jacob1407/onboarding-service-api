@@ -28,3 +28,11 @@ class RolesDAO:
 
     def get_role_by_id(self, role_id: str) -> RoleModel | None:
         return self.db.query(RoleModel).filter(RoleModel.id == role_id).first()
+
+    def update_role(self, role_id: str, data: CreateRoleRequestModel) -> RoleModel:
+        role = self.get_role_by_id(role_id)
+        role.name = data.name
+        role.description = data.description
+        self.db.commit()
+        self.db.refresh(role)
+        return role

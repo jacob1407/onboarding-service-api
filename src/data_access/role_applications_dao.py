@@ -21,3 +21,15 @@ class RoleApplicationDAO:
             .filter_by(role_id=role_id)
             .all()
         ]
+
+    def update_role_applications(self, role_id: str, new_application_ids: list[str]):
+        self.db.query(RoleApplicationModel).filter(
+            RoleApplicationModel.role_id == role_id
+        ).delete()
+        self.db.bulk_save_objects(
+            [
+                RoleApplicationModel(role_id=role_id, application_id=app_id)
+                for app_id in new_application_ids
+            ]
+        )
+        self.db.commit()

@@ -29,3 +29,10 @@ class ApplicationsDAO:
 
     def get_by_id(self, app_id: UUID) -> ApplicationModel | None:
         return self.db.query(ApplicationModel).filter_by(id=app_id).first()
+
+    def get_by_ids(self, app_ids: list[UUID]) -> list[ApplicationModel]:
+        return (
+            self.db.query(ApplicationModel)
+            .filter(ApplicationModel.id.in_(app_ids))
+            .all()
+        )

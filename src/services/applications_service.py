@@ -42,3 +42,9 @@ class ApplicationService:
     def get_application_by_id(self, app_id: UUID) -> GetApplicationResponseModel | None:
         app = self.dao.get_by_id(app_id)
         return GetApplicationResponseModel.model_validate(app) if app else None
+
+    def get_applications_by_ids(
+        self, app_ids: list[UUID]
+    ) -> list[GetApplicationResponseModel]:
+        apps = self.dao.get_by_ids(app_ids)
+        return [GetApplicationResponseModel.model_validate(app) for app in apps]

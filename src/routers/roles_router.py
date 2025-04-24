@@ -30,3 +30,14 @@ def get_role(role_id: str, db: Session = Depends(get_db)):
     if not role:
         raise HTTPException(status_code=404, detail="Role not found")
     return role
+
+
+@router.put("/{role_id}", response_model=GetRoleResponseModel)
+def update_role(
+    role_id: str, data: CreateRoleRequestModel, db: Session = Depends(get_db)
+):
+    service = RolesService(db)
+    updated = service.update_role(role_id, data)
+    if not updated:
+        raise HTTPException(status_code=404, detail="Role not found")
+    return updated

@@ -15,3 +15,8 @@ class RoleApplicationsService:
 
     def get_application_ids_for_role(self, role_id: UUID) -> list[UUID]:
         return self.dao.get_applications_by_role_id(role_id)
+
+    def update_role_applications(
+        self, role_id: UUID, new_application_ids: list[UUID]
+    ) -> None:
+        self.dao.update_role_applications(role_id, new_application_ids)

@@ -18,9 +18,9 @@ def create_contact(data: CreateContactRequestModel, db: Session = Depends(get_db
 
 
 @router.get("/", response_model=list[GetContactResponseModel])
-def get_contacts(org_id: UUID, db: Session = Depends(get_db)):
+def get_contacts(organisation_id: UUID, db: Session = Depends(get_db)):
     service = ContactService(db)
-    return service.get_contacts_by_org_id(org_id)
+    return service.get_contacts_by_org_id(organisation_id)
 
 
 @router.get("/{contact_id}", response_model=GetContactResponseModel)

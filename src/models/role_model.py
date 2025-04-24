@@ -1,5 +1,5 @@
 import uuid
-from sqlalchemy import Column, ForeignKey, String
+from sqlalchemy import Column, DateTime, ForeignKey, String, func
 from sqlalchemy.dialects.postgresql import UUID
 from ..db import Base
 
@@ -19,4 +19,7 @@ class RoleModel(Base):
     description = Column(String, nullable=True)
     organisation_id = Column(
         UUID(as_uuid=True), ForeignKey("organisations.id"), nullable=False
+    )
+    created_date = Column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
     )

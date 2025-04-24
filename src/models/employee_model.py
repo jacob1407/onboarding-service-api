@@ -1,5 +1,5 @@
 from uuid import uuid4
-from sqlalchemy import Column, String, ForeignKey
+from sqlalchemy import Column, DateTime, String, ForeignKey, func
 from sqlalchemy.dialects.postgresql import UUID
 from ..db import Base
 
@@ -20,4 +20,7 @@ class EmployeeModel(Base):
     role_id = Column(UUID(as_uuid=True), ForeignKey("roles.id"), nullable=False)
     organisation_id = Column(
         UUID(as_uuid=True), ForeignKey("organisations.id"), nullable=False
+    )
+    created_date = Column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
     )

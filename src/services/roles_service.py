@@ -42,15 +42,9 @@ class RolesService:
         if not role:
             return None
 
-        application_ids = self.__role_application_service.get_application_ids_for_role(
+        applications = self.__role_application_service.get_applications_by_role_id(
             role_id
         )
-
-        applications = []
-        if application_ids:
-            applications = self.applications_service.get_applications_by_ids(
-                application_ids
-            )
 
         return GetRoleResponseModel(
             id=role.id,

@@ -36,3 +36,21 @@ class ApplicationsDAO:
             .filter(ApplicationModel.id.in_(app_ids))
             .all()
         )
+
+    def update(
+        self, application_id: UUID, data: CreateApplicationRequestModel
+    ) -> ApplicationModel:
+        app = (
+            self.db.query(ApplicationModel)
+            .filter(ApplicationModel.id == application_id)
+            .first()
+        )
+        if not app:
+            return None
+
+        app.name = data.name
+        app.code = data.name.lower().replace(" ", "_")
+        app.description = data.description
+        self.db.commit()
+        self.db.refresh(app)
+        return app

@@ -1,5 +1,7 @@
 from sqlalchemy.orm import Session
 from uuid import UUID
+
+from ..schemas.applications_schema import GetApplicationResponseModel
 from ..data_access.role_applications_dao import RoleApplicationDAO
 
 
@@ -14,7 +16,12 @@ class RoleApplicationsService:
             self.dao.create(role_id, app_id)
 
     def get_application_ids_for_role(self, role_id: UUID) -> list[UUID]:
-        return self.dao.get_applications_by_role_id(role_id)
+        return self.dao.get_application_ids_by_role_id(role_id)
+
+    def get_applications_by_role_id(
+        self, role_id: UUID
+    ) -> list[GetApplicationResponseModel]:
+        return self.dao.get_all_applications_by_role_id(role_id)
 
     def update_role_applications(
         self, role_id: UUID, new_application_ids: list[UUID]

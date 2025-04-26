@@ -1,5 +1,7 @@
 from uuid import UUID
 from sqlalchemy.orm import Session
+
+from ..models.application_model import ApplicationModel
 from ..models.role_application_model import RoleApplicationModel
 
 
@@ -14,7 +16,7 @@ class RoleApplicationDAO:
         self.db.refresh(record)
         return record
 
-    def get_applications_by_role_id(self, role_id: UUID) -> list[UUID]:
+    def get_application_ids_by_role_id(self, role_id: UUID) -> list[UUID]:
         return [
             r.application_id
             for r in self.db.query(RoleApplicationModel)
@@ -33,3 +35,14 @@ class RoleApplicationDAO:
             ]
         )
         self.db.commit()
+
+    def get_all_applications_by_role_id(self, role_id: UUID) -> list[ApplicationModel]:
+        return (
+            self.db.query(ApplicationModel)
+            .join(
+                RoleApplicationModel,
+                RoleApplicationModel.application_id == ApplicationModel.id,
+            )
+            .filter(RoleApplicationModel.role_id == role_id)
+            .all()
+        )

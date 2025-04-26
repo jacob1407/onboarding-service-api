@@ -28,3 +28,8 @@ class ContactDAO:
 
     def get_by_id(self, contact_id: UUID) -> ContactModel | None:
         return self.db.query(ContactModel).filter_by(id=contact_id).first()
+
+    def get_by_ids(self, contact_ids: list[UUID]) -> list[ContactModel]:
+        return (
+            self.db.query(ContactModel).filter(ContactModel.id.in_(contact_ids)).all()
+        )

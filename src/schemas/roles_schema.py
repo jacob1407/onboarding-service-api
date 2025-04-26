@@ -2,7 +2,9 @@ from uuid import UUID
 from pydantic import BaseModel, computed_field
 from typing import List
 
-from ..schemas.applications_schema import GetApplicationResponseModel
+from ..schemas.applications_schema import (
+    GetApplicationsResponseModel,
+)
 
 
 class CreateRoleRequestModel(BaseModel):
@@ -31,6 +33,6 @@ class GetRoleResponseModel(BaseModel):
     name: str
     code: str
     description: str | None
-    applications: List[GetApplicationResponseModel]
+    applications: List[GetApplicationsResponseModel]
 
     model_config = {"from_attributes": True}

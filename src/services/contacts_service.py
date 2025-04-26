@@ -24,3 +24,9 @@ class ContactService:
     def get_contact_by_id(self, contact_id: UUID) -> GetContactResponseModel | None:
         contact = self.dao.get_by_id(contact_id)
         return GetContactResponseModel.model_validate(contact) if contact else None
+
+    def get_contacts_by_ids(
+        self, contact_ids: list[UUID]
+    ) -> list[GetContactResponseModel]:
+        contacts = self.dao.get_by_ids(contact_ids)
+        return [GetContactResponseModel.model_validate(c) for c in contacts]

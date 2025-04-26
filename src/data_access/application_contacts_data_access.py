@@ -5,7 +5,7 @@ from ..models.contact_model import ContactModel
 from ..models.application_contact_model import ApplicationContactsModel
 
 
-class ContactApplicationDAO:
+class ApplicationContactDataAccess:
     def __init__(self, db: Session):
         self.db = db
 

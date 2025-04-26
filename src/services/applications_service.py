@@ -8,14 +8,14 @@ from ..schemas.applications_schema import (
     GetApplicationResponseModel,
     GetApplicationsResponseModel,
 )
-from ..data_access.applications_dao import ApplicationsDAO
-from ..data_access.contacts_dao import ContactDAO
+from ..data_access.application_data_access import ApplicationDataAccess
+from ..data_access.contact_data_access import ContactDataAccess
 from uuid import UUID
 
 
 class ApplicationService:
     def __init__(self, db: Session):
-        self.dao = ApplicationsDAO(db)
+        self.dao = ApplicationDataAccess(db)
         self.application_contacts_service = ApplicationContactsService(db)
         self.contact_service = ContactService(db)
 

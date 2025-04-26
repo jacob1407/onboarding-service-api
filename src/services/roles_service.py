@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 
 from ..services.applications_service import ApplicationService
-from ..data_access.roles_dao import RolesDAO
+from ..data_access.role_data_access import RoleDataAccess
 from ..services.role_applications_service import RoleApplicationsService
 from ..schemas.roles_schema import (
     CreateRoleRequestModel,
@@ -12,7 +12,7 @@ from ..schemas.roles_schema import (
 
 class RolesService:
     def __init__(self, db: Session):
-        self.__dao = RolesDAO(db)
+        self.__dao = RoleDataAccess(db)
         self.__role_application_service = RoleApplicationsService(db)
         self.applications_service = ApplicationService(db)
 

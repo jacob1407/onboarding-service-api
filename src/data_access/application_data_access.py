@@ -7,7 +7,7 @@ import uuid
 from uuid import UUID
 
 
-class ApplicationsDAO:
+class ApplicationDataAccess:
     def __init__(self, db: Session):
         self.db = db
 

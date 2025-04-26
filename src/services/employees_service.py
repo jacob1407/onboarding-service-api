@@ -6,7 +6,7 @@ from ..schemas.employees_schema import (
     CreateEmployeeRequestModel,
     GetEmployeeResponseModel,
 )
-from ..data_access.employee_dao import EmployeeDataAccess
+from ..data_access.employee_data_access import EmployeeDataAccess
 
 
 class EmployeeService:

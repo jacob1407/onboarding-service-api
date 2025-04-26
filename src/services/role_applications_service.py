@@ -2,12 +2,12 @@ from sqlalchemy.orm import Session
 from uuid import UUID
 
 from ..schemas.applications_schema import GetApplicationResponseModel
-from ..data_access.role_applications_dao import RoleApplicationDAO
+from ..data_access.role_application_data_access import RoleApplicationDataAccess
 
 
 class RoleApplicationsService:
     def __init__(self, db: Session):
-        self.dao = RoleApplicationDAO(db)
+        self.dao = RoleApplicationDataAccess(db)
 
     def associate_applications_to_role(
         self, role_id: UUID, application_ids: list[UUID]

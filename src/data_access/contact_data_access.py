@@ -5,7 +5,7 @@ from ..schemas.contact_schema import CreateContactRequestModel
 import uuid
 
 
-class ContactDAO:
+class ContactDataAccess:
     def __init__(self, db: Session):
         self.db = db
 

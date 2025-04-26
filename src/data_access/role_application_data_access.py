@@ -5,7 +5,7 @@ from ..models.application_model import ApplicationModel
 from ..models.role_application_model import RoleApplicationModel
 
 
-class RoleApplicationDAO:
+class RoleApplicationDataAccess:
     def __init__(self, db: Session):
         self.db = db
 

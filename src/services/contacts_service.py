@@ -4,12 +4,12 @@ from ..schemas.contact_schema import (
     CreateContactRequestModel,
     GetContactResponseModel,
 )
-from ..data_access.contacts_dao import ContactDAO
+from ..data_access.contact_data_access import ContactDataAccess
 
 
 class ContactService:
     def __init__(self, db: Session):
-        self.dao = ContactDAO(db)
+        self.dao = ContactDataAccess(db)
 
     def create_contact(
         self, data: CreateContactRequestModel

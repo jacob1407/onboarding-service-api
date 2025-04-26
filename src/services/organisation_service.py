@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from ..data_access.organisations_dao import OrganisationDataAccess
+from ..data_access.organisation_data_access import OrganisationDataAccess
 from ..models.organisation_model import OrganisationModel
 from ..schemas.organisation_schema import CreateOrganisationRequestModel
 

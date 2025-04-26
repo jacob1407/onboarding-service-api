@@ -5,7 +5,7 @@ from ..schemas.roles_schema import CreateRoleRequestModel
 from ..models.role_model import RoleModel
 
 
-class RolesDAO:
+class RoleDataAccess:
     def __init__(self, db: Session):
         self.db = db
 

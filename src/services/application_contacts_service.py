@@ -2,12 +2,12 @@ from sqlalchemy.orm import Session
 from uuid import UUID
 
 from ..schemas.contact_schema import GetContactResponseModel
-from ..data_access.application_contacts_dao import ContactApplicationDAO
+from ..data_access.application_contacts_data_access import ApplicationContactDataAccess
 
 
 class ApplicationContactsService:
     def __init__(self, db: Session):
-        self.dao = ContactApplicationDAO(db)
+        self.dao = ApplicationContactDataAccess(db)
 
     def associate_contacts_to_application(
         self, application_id: UUID, contact_ids: list[UUID]

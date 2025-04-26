@@ -23,3 +23,9 @@ class ApplicationModel(Base):
     created_date = Column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
+    last_updated_date = Column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        onupdate=func.now(),
+        nullable=False,
+    )

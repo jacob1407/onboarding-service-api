@@ -1,5 +1,5 @@
 import uuid
-from sqlalchemy import Column, String
+from sqlalchemy import Column, DateTime, String, func
 from sqlalchemy.dialects.postgresql import UUID
 from ..db import Base
 
@@ -16,3 +16,12 @@ class OrganisationModel(Base):
     )
     name = Column(String, nullable=False, unique=True)
     contact_emails = Column(String, nullable=False)
+    created_date = Column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+    last_updated_date = Column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        onupdate=func.now(),
+        nullable=False,
+    )

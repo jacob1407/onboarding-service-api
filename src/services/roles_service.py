@@ -66,8 +66,8 @@ class RolesService:
             role_id, data.application_ids
         )
 
-        applications = self.applications_service.get_applications_by_ids(
-            data.application_ids
+        applications = self.__role_application_service.get_applications_by_role_id(
+            role_id
         )
 
         return GetRoleResponseModel(

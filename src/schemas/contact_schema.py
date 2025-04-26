@@ -11,7 +11,10 @@ class CreateContactRequestModel(BaseModel):
     organisation_id: UUID
 
 
-class GetContactResponseModel(CreateContactRequestModel):
+class GetContactResponseModel(BaseModel):
     id: UUID
+    first_name: str
+    last_name: str
+    email: str
 
     model_config = {"from_attributes": True}

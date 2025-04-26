@@ -33,3 +33,19 @@ class ContactDataAccess:
         return (
             self.db.query(ContactModel).filter(ContactModel.id.in_(contact_ids)).all()
         )
+
+    def update(
+        self, contact_id: UUID, data: CreateContactRequestModel
+    ) -> ContactModel | None:
+        contact = (
+            self.db.query(ContactModel).filter(ContactModel.id == contact_id).first()
+        )
+        if not contact:
+            return None
+
+        contact.first_name = data.first_name
+        contact.last_name = data.last_name
+        contact.email = data.email
+        self.db.commit()
+        self.db.refresh(contact)
+        return contact

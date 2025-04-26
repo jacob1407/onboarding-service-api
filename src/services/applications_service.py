@@ -27,14 +27,14 @@ class ApplicationService:
             self.application_contacts_service.associate_contacts_to_application(
                 app.id, data.contact_ids
             )
-
+        contacts = self.contact_service.get_contacts_by_ids(data.contact_ids or [])
         return GetApplicationResponseModel(
             id=app.id,
             name=app.name,
             code=app.code,
             organisation_id=app.organisation_id,
             description=app.description,
-            contact_ids=data.contact_ids,
+            contacts=contacts,
         )
 
     def get_applications_by_org_id(

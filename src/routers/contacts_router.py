@@ -30,3 +30,16 @@ def get_contact(contact_id: UUID, db: Session = Depends(get_db)):
     if not contact:
         raise HTTPException(status_code=404, detail="Contact not found")
     return contact
+
+
+@router.put("/{contact_id}", response_model=GetContactResponseModel)
+def update_contact(
+    contact_id: UUID,
+    data: CreateContactRequestModel,
+    db: Session = Depends(get_db),
+):
+    service = ContactService(db)
+    updated = service.update_contact(contact_id, data)
+    if not updated:
+        raise HTTPException(status_code=404, detail="Contact not found")
+    return updated

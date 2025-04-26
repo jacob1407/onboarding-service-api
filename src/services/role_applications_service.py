@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from uuid import UUID
 
-from ..schemas.applications_schema import GetApplicationResponseModel
+from ..schemas.applications_schema import GetApplicationsResponseModel
 from ..data_access.role_application_data_access import RoleApplicationDataAccess
 
 
@@ -20,8 +20,11 @@ class RoleApplicationsService:
 
     def get_applications_by_role_id(
         self, role_id: UUID
-    ) -> list[GetApplicationResponseModel]:
-        return self.dao.get_all_applications_by_role_id(role_id)
+    ) -> list[GetApplicationsResponseModel]:
+        applications = self.dao.get_all_applications_by_role_id(role_id)
+        return [
+            GetApplicationsResponseModel.model_validate(app) for app in applications
+        ]
 
     def update_role_applications(
         self, role_id: UUID, new_application_ids: list[UUID]

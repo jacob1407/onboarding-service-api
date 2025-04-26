@@ -30,3 +30,9 @@ class ContactService:
     ) -> list[GetContactResponseModel]:
         contacts = self.dao.get_by_ids(contact_ids)
         return [GetContactResponseModel.model_validate(c) for c in contacts]
+
+    def update_contact(
+        self, contact_id: UUID, data: CreateContactRequestModel
+    ) -> GetContactResponseModel | None:
+        contact = self.dao.update(contact_id, data)
+        return GetContactResponseModel.model_validate(contact) if contact else None

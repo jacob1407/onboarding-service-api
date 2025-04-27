@@ -7,6 +7,8 @@ from ..db import get_db
 from ..schemas.employees_schema import (
     CreateEmployeeRequestModel,
     GetEmployeeResponseModel,
+    GetEmployeesResponseModel,
+    UpdateEmployeeRequestModel,
 )
 
 router = APIRouter()
@@ -27,7 +29,7 @@ def create_employee(
 
 @router.get("/{employee_id}", response_model=GetEmployeeResponseModel)
 def get_employee(
-    employee_id: int, service: EmployeeService = Depends(get_employee_service)
+    employee_id: UUID, service: EmployeeService = Depends(get_employee_service)
 ):
     user = service.get_employee(employee_id)
     if not user:
@@ -35,9 +37,21 @@ def get_employee(
     return user
 
 
-@router.get("/", response_model=list[GetEmployeeResponseModel])
+@router.get("/", response_model=list[GetEmployeesResponseModel])
 def get_employees(
     organisation_id: UUID = Query(...),
     service: EmployeeService = Depends(get_employee_service),
 ):
     return service.get_employees_by_org_id(organisation_id)
+
+
+@router.put("/{employee_id}", response_model=GetEmployeeResponseModel)
+def update_employee(
+    employee_id: UUID,
+    data: UpdateEmployeeRequestModel,
+    service: EmployeeService = Depends(get_employee_service),
+):
+    updated = service.update_employee(employee_id, data)
+    if not updated:
+        raise HTTPException(status_code=404, detail="Employee not found")
+    return updated

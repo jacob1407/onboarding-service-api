@@ -38,6 +38,9 @@ class RolesService:
         return [GetRolesResponseModel.model_validate(r) for r in roles]
 
     def get_role_by_id(self, role_id: str) -> GetRolesResponseModel | None:
+        return GetRolesResponseModel.model_validate(self.__dao.get_role_by_id(role_id))
+
+    def get_role_details_by_id(self, role_id: str) -> GetRoleResponseModel | None:
         role = self.__dao.get_role_by_id(role_id)
         if not role:
             return None

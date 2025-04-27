@@ -1,5 +1,7 @@
 from sqlalchemy.orm import Session
 from uuid import UUID
+
+from ..schemas.employees_schema import UpdateEmployeeRequestModel
 from ..models.employee_model import EmployeeModel
 
 
@@ -26,3 +28,23 @@ class EmployeeDataAccess:
             .filter(EmployeeModel.organisation_id == org_id)
             .all()
         )
+
+    def update(
+        self, employee_id: UUID, data: UpdateEmployeeRequestModel
+    ) -> EmployeeModel | None:
+        employee = (
+            self._db.query(EmployeeModel)
+            .filter(EmployeeModel.id == employee_id)
+            .first()
+        )
+        if not employee:
+            return None
+
+        employee.first_name = data.first_name
+        employee.last_name = data.last_name
+        employee.email = data.email
+        employee.role_id = data.role_id
+
+        self._db.commit()
+        self._db.refresh(employee)
+        return employee

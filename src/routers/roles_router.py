@@ -26,7 +26,7 @@ def get_roles(organisation_id: str, db: Session = Depends(get_db)):
 @router.get("/{role_id}", response_model=GetRoleResponseModel)
 def get_role(role_id: str, db: Session = Depends(get_db)):
     service = RolesService(db)
-    role = service.get_role_by_id(role_id)
+    role = service.get_role_details_by_id(role_id)
     if not role:
         raise HTTPException(status_code=404, detail="Role not found")
     return role

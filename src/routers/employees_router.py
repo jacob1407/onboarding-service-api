@@ -24,7 +24,7 @@ def create_employee(
     service: EmployeeService = Depends(get_employee_service),
 ):
     result = service.create_employee(data)
-    return result
+    return result.id
 
 
 @router.get("/{employee_id}", response_model=GetEmployeeResponseModel)

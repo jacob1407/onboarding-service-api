@@ -24,6 +24,7 @@ from src.models import (
     role_model,
     application_contact_model,
     role_application_model,
+    user_model,
 )  # import models to reflect schema
 
 # Alembic config

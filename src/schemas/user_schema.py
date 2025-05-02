@@ -19,6 +19,7 @@ class CreateUserRequestModel(BaseModel):
 
 
 class CreateEmployeeRequestModel(CreateUserRequestModel):
+    type: UserType = UserType.employee
     role_id: UUID
 
 

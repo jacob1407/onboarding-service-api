@@ -49,3 +49,12 @@ def update_user(
 def create_employee(data: CreateEmployeeRequestModel, db: Session = Depends(get_db)):
     service = UsersService(db)
     return service.create_employee(data)
+
+
+@router.get("/employees/{user_id}", response_model=GetEmployeeResponseModel)
+def get_employee(user_id: str, db: Session = Depends(get_db)):
+    service = UsersService(db)
+    employee = service.get_employee_by_id(user_id)
+    if not employee:
+        raise HTTPException(status_code=404, detail="Employee not found")
+    return employee

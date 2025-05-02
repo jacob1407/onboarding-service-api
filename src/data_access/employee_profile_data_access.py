@@ -15,3 +15,10 @@ class EmployeeProfileDataAccess:
         self.db.commit()
         self.db.refresh(profile)
         return profile
+
+    def get_employee_profile(self, user_id: uuid.UUID) -> EmployeeProfileModel | None:
+        return (
+            self.db.query(EmployeeProfileModel)
+            .filter(EmployeeProfileModel.user_id == user_id)
+            .first()
+        )

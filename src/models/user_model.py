@@ -12,8 +12,8 @@ from sqlalchemy.orm import relationship
 import uuid
 
 from ..db import Base
-from ..enum.user_status import UserStatus
-from ..enum.user_type import UserType
+from ..enums.user_status import UserStatus
+from ..enums.user_type import UserType
 
 
 class UserModel(Base):

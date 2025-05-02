@@ -4,9 +4,9 @@ from typing import Literal
 
 from ..schemas.roles_schema import GetRolesResponseModel
 
-from ..enum.user_status import UserStatus
+from ..enums.user_status import UserStatus
 
-from ..enum.user_type import UserType
+from ..enums.user_type import UserType
 
 
 class CreateUserRequestModel(BaseModel):

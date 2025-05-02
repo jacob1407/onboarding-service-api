@@ -1,11 +1,12 @@
 from sqlalchemy.orm import Session
 
+from ..data_access.employee_onboarding_data_access import EmployeeOnboardingDataAccess
 from ..data_access.employee_profile_data_access import EmployeeProfileDataAccess
-
 from ..services.roles_service import RolesService
-
-from ..enum.user_type import UserType
 from ..data_access.user_data_access import UserDataAccess
+
+from ..enums.user_type import UserType
+
 from ..schemas.user_schema import (
     CreateEmployeeRequestModel,
     CreateUserRequestModel,
@@ -19,6 +20,7 @@ class UsersService:
         self.__data_access = UserDataAccess(db)
         self.__roles_service = RolesService(db)
         self.__employee_profile_data_access = EmployeeProfileDataAccess(db)
+        self.__onboarding_data_access = EmployeeOnboardingDataAccess(db)
 
     def create_user(self, data: CreateUserRequestModel) -> GetUserResponseModel:
         user = self.__data_access.create_user(data)
@@ -52,6 +54,9 @@ class UsersService:
             user.id, data.role_id
         )
         role = self.__roles_service.get_role_by_id(data.role_id)
+
+        # Create employee onboarding record
+        self.__onboarding_data_access.create_onboarding(user_id=user.id)
 
         return GetEmployeeResponseModel(
             id=user.id,

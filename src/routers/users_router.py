@@ -1,8 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+
 from ..schemas.user_schema import (
     CreateUserRequestModel,
+    GetEmployeeResponseModel,
     GetUserResponseModel,
+    CreateEmployeeRequestModel,
 )
 from ..services.users_service import UsersService
 from ..db import get_db
@@ -40,3 +43,9 @@ def update_user(
     if not updated:
         raise HTTPException(status_code=404, detail="User not found")
     return updated
+
+
+@router.post("/employees", response_model=GetEmployeeResponseModel)
+def create_employee(data: CreateEmployeeRequestModel, db: Session = Depends(get_db)):
+    service = UsersService(db)
+    return service.create_employee(data)

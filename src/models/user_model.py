@@ -8,6 +8,7 @@ from sqlalchemy import (
     func,
 )
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
 import uuid
 
 from ..db import Base
@@ -48,4 +49,8 @@ class UserModel(Base):
         server_default=func.now(),
         onupdate=func.now(),
         nullable=False,
+    )
+
+    employee_profile = relationship(
+        "EmployeeProfileModel", uselist=False, back_populates="user"
     )

@@ -2,5 +2,5 @@ import enum
 
 
 class UserType(enum.Enum):
-    admin = "active"
+    admin = "admin"
     employee = "employee"

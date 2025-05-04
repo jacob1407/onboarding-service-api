@@ -10,6 +10,3 @@ class EmployeeProfileModel(Base):
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), primary_key=True)
     role_id = Column(UUID(as_uuid=True), ForeignKey("roles.id"), nullable=False)
     start_date = Column(Date, nullable=True)
-
-    user = relationship("UserModel", back_populates="employee_profile")
-    role = relationship("RoleModel")

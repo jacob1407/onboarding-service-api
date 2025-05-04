@@ -8,8 +8,10 @@ from sqlalchemy import (
     func,
 )
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, Mapped
 import uuid
+
+from ..models.employee_onboarding_model import EmployeeOnboardingModel
 
 from ..db import Base
 from ..enums.user_status import UserStatus
@@ -51,6 +53,9 @@ class UserModel(Base):
         nullable=False,
     )
 
-    employee_profile = relationship(
-        "EmployeeProfileModel", uselist=False, back_populates="user"
+    employee_onboarding = relationship(
+        "EmployeeOnboardingModel",
+        uselist=False,
+        back_populates="user",
+        foreign_keys="[EmployeeOnboardingModel.user_id]",
     )

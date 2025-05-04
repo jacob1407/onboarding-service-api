@@ -19,7 +19,6 @@ class UsersService:
     def __init__(self, db: Session):
         self.__data_access = UserDataAccess(db)
         self.__roles_service = RolesService(db)
-        self.__employee_profile_data_access = EmployeeProfileDataAccess(db)
         self.__onboarding_data_access = EmployeeOnboardingDataAccess(db)
 
     def create_user(self, data: CreateUserRequestModel) -> GetUserResponseModel:
@@ -50,13 +49,12 @@ class UsersService:
             raise ValueError("User type must be 'employee' to create an employee")
 
         user = self.__data_access.create_user(data)
-        self.__employee_profile_data_access.create_employee_profile(
-            user.id, data.role_id
-        )
-        role = self.__roles_service.get_role_by_id(data.role_id)
 
         # Create employee onboarding record
-        self.__onboarding_data_access.create_onboarding(user_id=user.id)
+        self.__onboarding_data_access.create_onboarding(
+            user_id=user.id, role_id=data.role_id
+        )
+        role = self.__roles_service.get_role_by_id(data.role_id)
 
         return GetEmployeeResponseModel(
             id=user.id,
@@ -72,15 +70,11 @@ class UsersService:
 
     def get_employee_by_id(self, user_id: str) -> GetEmployeeResponseModel | None:
         user = self.__data_access.get_user_by_id(user_id)
-        print(user)
         if not user or user.type != UserType.employee:
             return None
 
-        profile = self.__employee_profile_data_access.get_employee_profile(user_id)
-        if not profile:
-            return None
-
-        role = self.__roles_service.get_role_by_id(profile.role_id)
+        onboarding = self.__onboarding_data_access.get_onboarding_by_user_id(user_id)
+        role = self.__roles_service.get_role_by_id(onboarding.role_id)
 
         return GetEmployeeResponseModel(
             id=user.id,
@@ -92,4 +86,41 @@ class UsersService:
             type=user.type,
             organisation_id=user.organisation_id,
             role=role,
+            onboarding_status=onboarding.status if onboarding else None,
+        )
+
+    def get_all_employees(self) -> list[GetEmployeeResponseModel]:
+        records = self.__data_access.get_all_employees()
+        return [
+            GetEmployeeResponseModel.model_validate(
+                {
+                    **record.__dict__,
+                    "role": record.employee_onboarding.role,
+                    "onboarding_status": record.employee_onboarding.status,
+                }
+            )
+            for record in records
+            if record.employee_onboarding
+        ]
+
+    def update_employee(
+        self, user_id: str, data: CreateEmployeeRequestModel
+    ) -> GetEmployeeResponseModel | None:
+        user = self.__data_access.get_user_by_id(user_id)
+        if not user or user.type != UserType.employee:
+            return None
+
+        updated_user = self.__data_access.update_user(user_id, data)
+        updated_onboarding = self.__onboarding_data_access.update_employee_role(
+            user_id, data.role_id
+        )
+
+        role = self.__roles_service.get_role_by_id(data.role_id)
+
+        return GetEmployeeResponseModel.model_validate(
+            {
+                **updated_user.__dict__,
+                "role": role,
+                "onboarding_status": updated_onboarding.status,
+            }
         )

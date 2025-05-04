@@ -8,12 +8,36 @@ class EmployeeOnboardingDataAccess:
     def __init__(self, db: Session):
         self.db = db
 
-    def create_onboarding(self, user_id: UUID) -> EmployeeOnboardingModel:
+    def create_onboarding(
+        self, user_id: UUID, role_id: UUID
+    ) -> EmployeeOnboardingModel:
         onboarding = EmployeeOnboardingModel(
             user_id=user_id,
             status=EmployeeOnboardingStatus.pending,
+            role_id=role_id,
         )
         self.db.add(onboarding)
+        self.db.commit()
+        self.db.refresh(onboarding)
+        return onboarding
+
+    def get_onboarding_by_user_id(
+        self, user_id: UUID
+    ) -> EmployeeOnboardingModel | None:
+        return (
+            self.db.query(EmployeeOnboardingModel)
+            .filter(EmployeeOnboardingModel.user_id == user_id)
+            .first()
+        )
+
+    def update_employee_role(
+        self, user_id: UUID, role_id: UUID
+    ) -> EmployeeOnboardingModel:
+        onboarding = self.get_onboarding_by_user_id(user_id)
+        if onboarding is None:
+            raise ValueError(f"No onboarding record found for user_id {user_id}")
+
+        onboarding.role_id = role_id
         self.db.commit()
         self.db.refresh(onboarding)
         return onboarding

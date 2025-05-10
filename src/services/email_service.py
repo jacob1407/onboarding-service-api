@@ -1,7 +1,7 @@
 from uuid import UUID
-import requests
 import resend
-from ..models.employee_model import EmployeeModel
+
+from ..models.user_model import UserModel
 from ..models.contact_model import ContactModel
 from ..models.application_model import ApplicationModel
 
@@ -17,7 +17,7 @@ class EmailService:
     def send_application_request_email(
         self,
         contact: ContactModel,
-        employee: EmployeeModel,
+        employee: UserModel,
         application: ApplicationModel,
         request_id: UUID,
     ):

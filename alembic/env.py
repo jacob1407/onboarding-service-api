@@ -20,7 +20,6 @@ from src.models import (
     admin_model,
     application_model,
     contact_model,
-    employee_model,
     role_model,
     application_contact_model,
     role_application_model,

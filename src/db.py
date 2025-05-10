@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 import os
 import time
 from sqlalchemy import create_engine
@@ -33,3 +34,21 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+def get_transactional_session():
+    with transactional_session() as session:
+        yield session
+
+
+@contextmanager
+def transactional_session():
+    session = SessionLocal()
+    try:
+        yield session  # ← hands control to the code INSIDE the `with` block
+        session.commit()  # ← resumes after `with` block finishes normally
+    except:
+        session.rollback()
+        raise
+    finally:
+        session.close()

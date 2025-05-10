@@ -41,3 +41,15 @@ class EmployeeOnboardingDataAccess:
         self.db.commit()
         self.db.refresh(onboarding)
         return onboarding
+
+    def update_onboarding_status_by_user_id(
+        self, user_id: UUID, status: EmployeeOnboardingStatus
+    ) -> EmployeeOnboardingModel:
+        onboarding = self.get_onboarding_by_user_id(user_id)
+        if onboarding is None:
+            raise ValueError(f"No onboarding record found for user_id {user_id}")
+
+        onboarding.status = status
+        self.db.commit()
+        self.db.refresh(onboarding)
+        return onboarding

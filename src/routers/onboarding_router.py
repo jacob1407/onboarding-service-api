@@ -3,6 +3,12 @@ from pydantic import BaseModel
 from uuid import UUID
 from sqlalchemy.orm import Session
 
+from ..services.users_service import UsersService
+
+from ..schemas.onboarding_requests_schema import (
+    GetOnboardingRequestResponseModel,
+)
+
 from ..services.onboarding_request_service import OnboardingRequestsService
 
 from ..db import get_transactional_session
@@ -44,3 +50,14 @@ def confirm_onboarding_request(
     return (
         "Thank you for confirming the onboarding request. You can close this tab now."
     )
+
+
+@router.get(
+    "/requests/{user_id}",
+    response_model=list[GetOnboardingRequestResponseModel],
+)
+def get_employee_onboarding_requests(
+    user_id: UUID, db: Session = Depends(get_transactional_session)
+):
+    service = OnboardingRequestsService(db)
+    return service.get_requests_by_user_id(str(user_id))

@@ -20,9 +20,7 @@ class OnboardingService:
         self.role_application_data_access = RoleApplicationDataAccess(db)
         self.application_contacts_data_access = ApplicationContactDataAccess(db)
         self.email_service = EmailService()
-        self.employee_onboarding_request_data_access = (
-            EmployeeOnboardingRequestDataAccess(db)
-        )
+        self.onboarding_request_data_access = EmployeeOnboardingRequestDataAccess(db)
 
     def start_onboarding(self, user_id: str) -> None:
         employee = self.user_data_access.get_user_by_id(user_id)
@@ -50,12 +48,9 @@ class OnboardingService:
                 app.id
             )
 
-            request_id = (
-                self.employee_onboarding_request_data_access.create_onboarding_request(
-                    employee_id=employee.id,
-                    application_id=app.id,
-                    onboarding_id=onboarding.id,
-                )
+            request_id = self.onboarding_request_data_access.create_onboarding_request(
+                application_id=app.id,
+                onboarding_id=onboarding.id,
             )
 
             # Send emails to all contacts associated with the application

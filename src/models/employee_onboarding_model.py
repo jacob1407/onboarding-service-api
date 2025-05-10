@@ -18,7 +18,6 @@ class EmployeeOnboardingModel(Base):
         UUID(as_uuid=True),
         ForeignKey("roles.id"),
         nullable=False,
-        server_default="0d4941ae-f6ca-44fa-8b53-6588ee97e904",
     )
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
     started_by = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=True)
@@ -34,4 +33,9 @@ class EmployeeOnboardingModel(Base):
         back_populates="employee_onboarding",
         uselist=False,
         foreign_keys=[user_id],
+    )
+    requests = relationship(
+        "EmployeeOnboardingRequestModel",
+        back_populates="onboarding",
+        cascade="all, delete-orphan",
     )

@@ -1,6 +1,7 @@
 import uuid
 from sqlalchemy import Column, DateTime, ForeignKey, String, func
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
 from ..db import Base
 
 
@@ -28,4 +29,10 @@ class ApplicationModel(Base):
         server_default=func.now(),
         onupdate=func.now(),
         nullable=False,
+    )
+
+    onboarding_requests = relationship(
+        "EmployeeOnboardingRequestModel",
+        back_populates="application",
+        cascade="all, delete-orphan",
     )

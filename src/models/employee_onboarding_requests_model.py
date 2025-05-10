@@ -1,5 +1,6 @@
-from sqlalchemy import Column, DateTime, ForeignKey, String, Enum
+from sqlalchemy import Column, DateTime, ForeignKey, Enum
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
 
 from ..enums.employee_onboarding_request_status import EmployeeOnboardingRequestStatus
 from ..db import Base
@@ -12,7 +13,6 @@ class EmployeeOnboardingRequestModel(Base):
     id = Column(
         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, nullable=False
     )
-    employee_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
     onboarding_id = Column(
         UUID(as_uuid=True), ForeignKey("employee_onboardings.id"), nullable=False
     )
@@ -27,3 +27,6 @@ class EmployeeOnboardingRequestModel(Base):
         UUID(as_uuid=True), ForeignKey("contacts.id"), nullable=True
     )
     completed_at = Column(DateTime(timezone=True), nullable=True)
+
+    application = relationship("ApplicationModel", back_populates="onboarding_requests")
+    onboarding = relationship("EmployeeOnboardingModel", back_populates="requests")

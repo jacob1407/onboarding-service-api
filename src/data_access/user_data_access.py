@@ -2,8 +2,7 @@ import uuid
 from sqlalchemy.orm import Session, joinedload
 
 from ..enums.user_type import UserType
-from ..models.employee_onboarding_model import EmployeeOnboardingModel
-from ..models.employee_profile_model import EmployeeProfileModel
+from ..models.onboarding_model import OnboardingModel
 from ..models.role_model import RoleModel
 from ..models.user_model import UserModel
 from ..schemas.user_schema import CreateUserRequestModel
@@ -53,13 +52,11 @@ class UserDataAccess:
     def get_all_employees(self) -> list[UserModel]:
         return (
             self.db.query(UserModel)
-            .join(
-                EmployeeOnboardingModel, EmployeeOnboardingModel.user_id == UserModel.id
-            )
-            .join(RoleModel, RoleModel.id == EmployeeOnboardingModel.role_id)
+            .join(OnboardingModel, OnboardingModel.user_id == UserModel.id)
+            .join(RoleModel, RoleModel.id == OnboardingModel.role_id)
             .options(
                 joinedload(UserModel.employee_onboarding).joinedload(
-                    EmployeeOnboardingModel.role
+                    OnboardingModel.role
                 )
             )
             .filter(UserModel.type == UserType.employee)

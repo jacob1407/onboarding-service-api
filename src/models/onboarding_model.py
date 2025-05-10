@@ -8,7 +8,7 @@ from ..enums.employee_onboarding_status import EmployeeOnboardingStatus
 from ..db import Base
 
 
-class EmployeeOnboardingModel(Base):
+class OnboardingModel(Base):
     __tablename__ = "employee_onboardings"
 
     id = Column(

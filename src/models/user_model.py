@@ -11,7 +11,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship, Mapped
 import uuid
 
-from ..models.employee_onboarding_model import EmployeeOnboardingModel
+from .onboarding_model import OnboardingModel
 
 from ..db import Base
 from ..enums.user_status import UserStatus

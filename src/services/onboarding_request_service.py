@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from uuid import UUID
 
-from ..data_access.employee_onboarding_data_access import EmployeeOnboardingDataAccess
+from ..data_access.onboarding_data_access import EmployeeOnboardingDataAccess
 
 from ..enums.employee_onboarding_status import EmployeeOnboardingStatus
 
@@ -10,10 +10,10 @@ from ..schemas.onboarding_requests_schema import (
 )
 
 from ..enums.employee_onboarding_request_status import EmployeeOnboardingRequestStatus
-from ..data_access.employee_onboarding_request_data_access import (
+from ..data_access.onboarding_request_data_access import (
     EmployeeOnboardingRequestDataAccess,
 )
-from ..models.employee_onboarding_requests_model import EmployeeOnboardingRequestModel
+from ..models.onboarding_requests_model import OnboardingRequestModel
 
 
 class OnboardingRequestsService:
@@ -23,7 +23,7 @@ class OnboardingRequestsService:
 
     def confirm_onboarding_request_complete(
         self, request_id: UUID
-    ) -> EmployeeOnboardingRequestModel | None:
+    ) -> OnboardingRequestModel | None:
         # Step 1: Get the request
         request = self.data_access.get_request_by_id(request_id)
         if not request:

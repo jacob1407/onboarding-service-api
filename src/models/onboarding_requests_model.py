@@ -7,7 +7,7 @@ from ..db import Base
 import uuid
 
 
-class EmployeeOnboardingRequestModel(Base):
+class OnboardingRequestModel(Base):
     __tablename__ = "employee_onboarding_requests"
 
     id = Column(

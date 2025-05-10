@@ -3,10 +3,10 @@ from fastapi import HTTPException, status
 
 from ..enums.employee_onboarding_status import EmployeeOnboardingStatus
 
-from ..data_access.employee_onboarding_request_data_access import (
+from ..data_access.onboarding_request_data_access import (
     EmployeeOnboardingRequestDataAccess,
 )
-from ..data_access.employee_onboarding_data_access import EmployeeOnboardingDataAccess
+from ..data_access.onboarding_data_access import EmployeeOnboardingDataAccess
 from ..data_access.role_application_data_access import RoleApplicationDataAccess
 from ..data_access.application_contacts_data_access import ApplicationContactDataAccess
 from ..data_access.user_data_access import UserDataAccess

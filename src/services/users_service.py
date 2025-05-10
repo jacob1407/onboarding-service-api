@@ -1,7 +1,6 @@
 from sqlalchemy.orm import Session
 
-from ..data_access.employee_onboarding_data_access import EmployeeOnboardingDataAccess
-from ..data_access.employee_profile_data_access import EmployeeProfileDataAccess
+from ..data_access.onboarding_data_access import EmployeeOnboardingDataAccess
 from ..services.roles_service import RolesService
 from ..data_access.user_data_access import UserDataAccess
 

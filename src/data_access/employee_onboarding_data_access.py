@@ -53,3 +53,12 @@ class EmployeeOnboardingDataAccess:
         self.db.commit()
         self.db.refresh(onboarding)
         return onboarding
+
+    def update_onboarding_status(
+        self, onboarding_id: UUID, new_status: EmployeeOnboardingStatus
+    ) -> None:
+        onboarding = (
+            self.db.query(EmployeeOnboardingModel).filter_by(id=onboarding_id).first()
+        )
+        if onboarding:
+            onboarding.status = new_status

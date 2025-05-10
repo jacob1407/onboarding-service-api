@@ -51,3 +51,21 @@ class EmployeeOnboardingRequestDataAccess:
             .options(joinedload(EmployeeOnboardingRequestModel.application))
             .all()
         )
+
+    def get_request_by_id(
+        self, request_id: UUID
+    ) -> EmployeeOnboardingRequestModel | None:
+        return (
+            self.db.query(EmployeeOnboardingRequestModel)
+            .filter_by(id=request_id)
+            .first()
+        )
+
+    def get_requests_by_onboarding_id(
+        self, onboarding_id: UUID
+    ) -> list[EmployeeOnboardingRequestModel]:
+        return (
+            self.db.query(EmployeeOnboardingRequestModel)
+            .filter_by(onboarding_id=onboarding_id)
+            .all()
+        )

@@ -34,6 +34,12 @@ class OnboardingService:
                 detail="Onboarding process is already in progress.",
             )
 
+        if onboarding.status == EmployeeOnboardingStatus.complete:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Onboarding process is already complete.",
+            )
+
         if not employee or not onboarding:
             raise ValueError("User or onboarding record not found")
 

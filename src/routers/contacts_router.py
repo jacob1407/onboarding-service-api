@@ -6,25 +6,29 @@ from ..schemas.contact_schema import (
     GetContactResponseModel,
 )
 from ..services.contacts_service import ContactService
-from ..db import get_db
+from ..db import get_transactional_session
 
 router = APIRouter()
 
 
 @router.post("/", response_model=GetContactResponseModel)
-def create_contact(data: CreateContactRequestModel, db: Session = Depends(get_db)):
+def create_contact(
+    data: CreateContactRequestModel, db: Session = Depends(get_transactional_session)
+):
     service = ContactService(db)
     return service.create_contact(data)
 
 
 @router.get("/", response_model=list[GetContactResponseModel])
-def get_contacts(organisation_id: UUID, db: Session = Depends(get_db)):
+def get_contacts(
+    organisation_id: UUID, db: Session = Depends(get_transactional_session)
+):
     service = ContactService(db)
     return service.get_contacts_by_org_id(organisation_id)
 
 
 @router.get("/{contact_id}", response_model=GetContactResponseModel)
-def get_contact(contact_id: UUID, db: Session = Depends(get_db)):
+def get_contact(contact_id: UUID, db: Session = Depends(get_transactional_session)):
     service = ContactService(db)
     contact = service.get_contact_by_id(contact_id)
     if not contact:
@@ -36,7 +40,7 @@ def get_contact(contact_id: UUID, db: Session = Depends(get_db)):
 def update_contact(
     contact_id: UUID,
     data: CreateContactRequestModel,
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_transactional_session),
 ):
     service = ContactService(db)
     updated = service.update_contact(contact_id, data)

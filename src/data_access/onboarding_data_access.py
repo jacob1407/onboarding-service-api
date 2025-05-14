@@ -15,8 +15,7 @@ class EmployeeOnboardingDataAccess:
             role_id=role_id,
         )
         self.db.add(onboarding)
-        self.db.commit()
-        self.db.refresh(onboarding)
+        self.db.flush()
         return onboarding
 
     def get_onboarding_by_user_id(self, user_id: UUID) -> OnboardingModel | None:
@@ -32,8 +31,6 @@ class EmployeeOnboardingDataAccess:
             raise ValueError(f"No onboarding record found for user_id {user_id}")
 
         onboarding.role_id = role_id
-        self.db.commit()
-        self.db.refresh(onboarding)
         return onboarding
 
     def update_onboarding_status_by_user_id(
@@ -44,8 +41,6 @@ class EmployeeOnboardingDataAccess:
             raise ValueError(f"No onboarding record found for user_id {user_id}")
 
         onboarding.status = status
-        self.db.commit()
-        self.db.refresh(onboarding)
         return onboarding
 
     def update_onboarding_status(

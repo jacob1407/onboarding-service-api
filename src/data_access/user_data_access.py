@@ -25,8 +25,7 @@ class UserDataAccess:
             status="inactive",
         )
         self.db.add(user)
-        self.db.commit()
-        self.db.refresh(user)
+        self.db.flush()
         return user
 
     def get_all_users(self, user_type: str = None) -> list[UserModel]:
@@ -45,8 +44,6 @@ class UserDataAccess:
         user.email = data.email
         user.username = data.username
         user.type = data.type
-        self.db.commit()
-        self.db.refresh(user)
         return user
 
     def get_all_employees(self) -> list[UserModel]:

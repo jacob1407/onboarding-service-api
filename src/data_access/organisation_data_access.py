@@ -11,6 +11,5 @@ class OrganisationDataAccess:
 
     def create_organisation(self, organisation_model: OrganisationModel):
         self._db.add(organisation_model)
-        self._db.commit()
-        self._db.refresh(organisation_model)
+        self._db.flush()
         return organisation_model

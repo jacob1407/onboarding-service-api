@@ -7,27 +7,32 @@ from ..schemas.applications_schema import (
     GetApplicationsResponseModel,
 )
 from ..services.applications_service import ApplicationService
-from ..db import get_db
+from ..db import get_transactional_session
 
 router = APIRouter()
 
 
 @router.post("/", response_model=GetApplicationResponseModel)
 def create_application(
-    data: CreateApplicationRequestModel, db: Session = Depends(get_db)
+    data: CreateApplicationRequestModel,
+    db: Session = Depends(get_transactional_session),
 ):
     service = ApplicationService(db)
     return service.create_application(data)
 
 
 @router.get("/", response_model=list[GetApplicationsResponseModel])
-def get_applications(organisation_id: UUID, db: Session = Depends(get_db)):
+def get_applications(
+    organisation_id: UUID, db: Session = Depends(get_transactional_session)
+):
     service = ApplicationService(db)
     return service.get_applications_by_org_id(organisation_id)
 
 
 @router.get("/{application_id}", response_model=GetApplicationResponseModel)
-def get_application(application_id: UUID, db: Session = Depends(get_db)):
+def get_application(
+    application_id: UUID, db: Session = Depends(get_transactional_session)
+):
     service = ApplicationService(db)
     app = service.get_application_by_id(application_id)
     if not app:
@@ -39,7 +44,7 @@ def get_application(application_id: UUID, db: Session = Depends(get_db)):
 def update_application(
     application_id: UUID,
     data: CreateApplicationRequestModel,
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_transactional_session),
 ):
     service = ApplicationService(db)
     updated = service.update_application(application_id, data)

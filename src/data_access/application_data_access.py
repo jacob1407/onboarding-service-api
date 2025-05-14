@@ -20,8 +20,7 @@ class ApplicationDataAccess:
             description=data.description,
         )
         self.db.add(app)
-        self.db.commit()
-        self.db.refresh(app)
+        self.db.flush()
         return app
 
     def get_by_org_id(self, org_id: UUID) -> list[ApplicationModel]:
@@ -51,6 +50,4 @@ class ApplicationDataAccess:
         app.name = data.name
         app.code = data.name.lower().replace(" ", "_")
         app.description = data.description
-        self.db.commit()
-        self.db.refresh(app)
         return app

@@ -19,8 +19,7 @@ class ContactDataAccess:
             organisation_id=data.organisation_id,
         )
         self.db.add(contact)
-        self.db.commit()
-        self.db.refresh(contact)
+        self.db.flush()
         return contact
 
     def get_by_org_id(self, org_id: UUID) -> list[ContactModel]:
@@ -46,6 +45,4 @@ class ContactDataAccess:
         contact.first_name = data.first_name
         contact.last_name = data.last_name
         contact.email = data.email
-        self.db.commit()
-        self.db.refresh(contact)
         return contact

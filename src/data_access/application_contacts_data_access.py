@@ -16,8 +16,7 @@ class ApplicationContactDataAccess:
             application_id=application_id, contact_id=contact_id
         )
         self.db.add(record)
-        self.db.commit()
-        self.db.refresh(record)
+        self.db.flush()
         return record
 
     def get_contact_ids_by_application_id(self, application_id: UUID) -> list[UUID]:
@@ -55,4 +54,3 @@ class ApplicationContactDataAccess:
                 for contact_id in new_contact_ids
             ]
         )
-        self.db.commit()

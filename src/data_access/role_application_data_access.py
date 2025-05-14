@@ -13,8 +13,7 @@ class RoleApplicationDataAccess:
     def create(self, role_id: UUID, application_id: UUID) -> RoleApplicationModel:
         record = RoleApplicationModel(role_id=role_id, application_id=application_id)
         self.db.add(record)
-        self.db.commit()
-        self.db.refresh(record)
+        self.db.flush()
         return record
 
     def get_application_ids_by_role_id(self, role_id: UUID) -> list[UUID]:
@@ -35,7 +34,6 @@ class RoleApplicationDataAccess:
                 for app_id in new_application_ids
             ]
         )
-        self.db.commit()
 
     def get_all_applications_by_role_id(self, role_id: UUID) -> list[ApplicationModel]:
         return (

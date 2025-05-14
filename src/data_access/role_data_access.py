@@ -17,8 +17,7 @@ class RoleDataAccess:
             description=role.description,
         )
         self.db.add(role)
-        self.db.commit()
-        self.db.refresh(role)
+        self.db.flush()
         return role
 
     def get_all_roles_by_org_id(self, org_id: str) -> list[RoleModel]:
@@ -33,6 +32,4 @@ class RoleDataAccess:
         role = self.get_role_by_id(role_id)
         role.name = data.name
         role.description = data.description
-        self.db.commit()
-        self.db.refresh(role)
         return role

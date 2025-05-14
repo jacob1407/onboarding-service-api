@@ -32,7 +32,7 @@ class ApplicationModel(Base):
     )
 
     onboarding_requests = relationship(
-        "EmployeeOnboardingRequestModel",
+        "OnboardingRequestModel",
         back_populates="application",
         cascade="all, delete-orphan",
     )

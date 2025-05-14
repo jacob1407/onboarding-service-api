@@ -29,4 +29,4 @@ class OnboardingRequestModel(Base):
     completed_at = Column(DateTime(timezone=True), nullable=True)
 
     application = relationship("ApplicationModel", back_populates="onboarding_requests")
-    onboarding = relationship("EmployeeOnboardingModel", back_populates="requests")
+    onboarding = relationship("OnboardingModel", back_populates="requests")

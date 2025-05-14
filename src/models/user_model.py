@@ -54,8 +54,8 @@ class UserModel(Base):
     )
 
     employee_onboarding = relationship(
-        "EmployeeOnboardingModel",
+        "OnboardingModel",
         uselist=False,
         back_populates="user",
-        foreign_keys="[EmployeeOnboardingModel.user_id]",
+        foreign_keys="[OnboardingModel.user_id]",
     )

@@ -1,6 +1,7 @@
 from uuid import UUID
 from sqlalchemy.orm import Session
 
+
 from ..models.application_model import ApplicationModel
 from ..models.role_application_model import RoleApplicationModel
 

@@ -16,7 +16,7 @@ class ContactModel(Base):
     )
     first_name = Column(String, nullable=False)
     last_name = Column(String, nullable=False)
-    email = Column(String, nullable=False, unique=True)
+    email = Column(String, nullable=False, unique=False)
     external_id = Column(String, nullable=True, unique=True)
     organisation_id = Column(
         UUID(as_uuid=True), ForeignKey("organisations.id"), nullable=False

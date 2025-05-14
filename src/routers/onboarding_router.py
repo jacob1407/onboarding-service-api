@@ -22,12 +22,12 @@ class StartOnboardingRequest(BaseModel):
 
 
 @router.post("/start")
-def start_onboarding(
+async def start_onboarding(
     request: StartOnboardingRequest, db: Session = Depends(get_transactional_session)
 ):
     try:
         service = OnboardingService(db)
-        onboarding_id = service.start_onboarding(user_id=request.user_id)
+        onboarding_id = await service.start_onboarding(user_id=request.user_id)
         return {
             "message": "Onboarding started and emails sent",
             "onboarding_id": onboarding_id,

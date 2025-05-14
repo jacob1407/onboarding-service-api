@@ -35,7 +35,7 @@ class OnboardingModel(Base):
         foreign_keys=[user_id],
     )
     requests = relationship(
-        "EmployeeOnboardingRequestModel",
+        "OnboardingRequestModel",
         back_populates="onboarding",
         cascade="all, delete-orphan",
     )

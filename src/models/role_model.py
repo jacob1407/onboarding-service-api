@@ -31,4 +31,4 @@ class RoleModel(Base):
         nullable=False,
     )
 
-    onboardings = relationship("EmployeeOnboardingModel", back_populates="role")
+    onboardings = relationship("OnboardingModel", back_populates="role")

@@ -1,5 +1,11 @@
+import asyncio
+from uuid import UUID
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
+
+from ..models.application_model import ApplicationModel
+from ..models.onboarding_model import OnboardingModel
+from ..models.user_model import UserModel
 
 from ..enums.employee_onboarding_status import EmployeeOnboardingStatus
 
@@ -22,11 +28,36 @@ class OnboardingService:
         self.email_service = EmailService()
         self.onboarding_request_data_access = EmployeeOnboardingRequestDataAccess(db)
 
-    def start_onboarding(self, user_id: str) -> None:
+    async def start_onboarding(self, user_id: str) -> UUID:
+        employee, onboarding = self._validate_and_get_onboarding(user_id)
+
+        applications = (
+            self.role_application_data_access.get_all_applications_by_role_id(
+                onboarding.role_id
+            )
+        )
+
+        request_email_information = self._prepare_request_email_information(
+            applications, onboarding, employee
+        )
+
+        await self._send_emails(request_email_information, employee)
+
+        self.employee_onboarding_data_access.update_onboarding_status_by_user_id(
+            user_id=user_id,
+            status=EmployeeOnboardingStatus.in_progress,
+        )
+
+        return onboarding.id
+
+    def _validate_and_get_onboarding(self, user_id: str):
         employee = self.user_data_access.get_user_by_id(user_id)
         onboarding = self.employee_onboarding_data_access.get_onboarding_by_user_id(
             user_id
         )
+
+        if not employee or not onboarding:
+            raise ValueError("User or onboarding record not found")
 
         if onboarding.status == EmployeeOnboardingStatus.in_progress:
             raise HTTPException(
@@ -40,15 +71,15 @@ class OnboardingService:
                 detail="Onboarding process is already complete.",
             )
 
-        if not employee or not onboarding:
-            raise ValueError("User or onboarding record not found")
+        return employee, onboarding
 
-        applications = (
-            self.role_application_data_access.get_all_applications_by_role_id(
-                onboarding.role_id
-            )
-        )
-
+    def _prepare_request_email_information(
+        self,
+        applications: list[ApplicationModel],
+        onboarding: OnboardingModel,
+        employee: UserModel,
+    ):
+        request_email_information = []
         for app in applications:
             contacts = self.application_contacts_data_access.get_all_contacts_by_application_id(
                 app.id
@@ -59,17 +90,24 @@ class OnboardingService:
                 onboarding_id=onboarding.id,
             )
 
-            # Send emails to all contacts associated with the application
-            for contact in contacts:
-                self.email_service.send_application_request_email(
-                    contact, employee, app, request_id
-                )
+            request_email_information.append(
+                {
+                    "contacts": contacts,
+                    "employee": employee,
+                    "application": app,
+                    "request_id": request_id,
+                }
+            )
 
-            # Record the onboarding request as requested
+        return request_email_information
 
-        self.employee_onboarding_data_access.update_onboarding_status_by_user_id(
-            user_id=user_id,
-            status=EmployeeOnboardingStatus.in_progress,
-        )
-
-        return onboarding.id
+    async def _send_emails(self, request_email_information, employee: UserModel):
+        """Send onboarding emails asynchronously."""
+        requests = [
+            self.email_service.send_application_request_email(
+                contact, employee, info["application"], info["request_id"]
+            )
+            for info in request_email_information
+            for contact in info["contacts"]
+        ]
+        await asyncio.gather(*requests)

@@ -1,20 +1,23 @@
 from uuid import UUID
-import resend
+import httpx
+from sendgrid.helpers.mail import Mail, Email, To, Content
 
 from ..models.user_model import UserModel
 from ..models.contact_model import ContactModel
 from ..models.application_model import ApplicationModel
 
-RESEND_API_KEY = "re_jWtvDQjv_LE8m71nzXofRZnitBfeUchWq"
+SENDGRID_API_KEY = (
+    "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"
+)
 
 
 class EmailService:
     def __init__(self):
-        self.api_key = RESEND_API_KEY
-        self.base_url = "https://api.resend.com/emails"
-        self.sender = "Onboarding Team <onboarding@resend.dev>"
+        self.api_key = SENDGRID_API_KEY
+        self.sender = "jacob1998.kim@gmail.com"
+        self.base_url = "https://api.sendgrid.com/v3/mail/send"
 
-    def send_application_request_email(
+    async def send_application_request_email(
         self,
         contact: ContactModel,
         employee: UserModel,
@@ -24,6 +27,7 @@ class EmailService:
         subject = (
             f"{employee.first_name} {employee.last_name} needs access to applications"
         )
+
         body = f"""
         <p>Dear {contact.first_name},</p>
 
@@ -38,18 +42,33 @@ class EmailService:
 
         <p>Thanks,</p>
         <p>Onboarding Team</p>
-
         """
 
-        self._send_email(to=contact.email, subject=subject, html_body=body)
+        await self._send_email(to=contact.email, subject=subject, html_body=body)
 
-    def _send_email(self, to: str, subject: str, html_body: str):
-        params: resend.Emails.SendParams = {
-            "from": self.sender,
-            "to": [to],
-            "subject": subject,
-            "html": html_body,
+    async def _send_email(self, to: str, subject: str, html_body: str):
+        # Build the message using SendGrid helpers
+        message = Mail(
+            from_email=Email(self.sender),
+            to_emails=To(to),
+            subject=subject,
+            html_content=Content("text/html", html_body),
+        )
+
+        payload = message.get()  # Convert Mail object to raw dict
+
+        headers = {
+            "Authorization": f"Bearer {self.api_key}",
+            "Content-Type": "application/json",
         }
-        resend.api_key = self.api_key
-        email = resend.Emails.send(params)
-        print(email)
+
+        async with httpx.AsyncClient() as client:
+            try:
+                response = await client.post(
+                    self.base_url,
+                    headers=headers,
+                    json=payload,
+                )
+                response.raise_for_status()
+            except httpx.HTTPError as exc:
+                print(f"SendGrid email send failed: {exc}")

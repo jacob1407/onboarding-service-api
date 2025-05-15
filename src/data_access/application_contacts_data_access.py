@@ -59,3 +59,9 @@ class ApplicationContactDataAccess:
         self.db.query(ApplicationContactsModel).filter(
             ApplicationContactsModel.contact_id == contact_id
         ).delete()
+
+    def delete_by_application_id(self, application_id: UUID):
+        self.db.query(ApplicationContactsModel).filter(
+            ApplicationContactsModel.application_id == application_id
+        ).delete()
+        self.db.commit()

@@ -51,3 +51,13 @@ def update_application(
     if not updated:
         raise HTTPException(status_code=404, detail="Application not found")
     return updated
+
+
+@router.delete("/{application_id}", status_code=204)
+def delete_application(
+    application_id: UUID, db: Session = Depends(get_transactional_session)
+):
+    service = ApplicationService(db)
+    deleted = service.delete_application(application_id)
+    if not deleted:
+        raise HTTPException(status_code=404, detail="Application not found")

@@ -51,3 +51,12 @@ class ApplicationDataAccess:
         app.code = data.name.lower().replace(" ", "_")
         app.description = data.description
         return app
+
+    def delete(self, application_id: UUID):
+        application = (
+            self.db.query(ApplicationModel)
+            .filter(ApplicationModel.id == application_id)
+            .first()
+        )
+        if application:
+            self.db.delete(application)

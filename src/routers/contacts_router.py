@@ -1,3 +1,4 @@
+from http import HTTPStatus
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from uuid import UUID
@@ -47,3 +48,11 @@ def update_contact(
     if not updated:
         raise HTTPException(status_code=404, detail="Contact not found")
     return updated
+
+
+@router.delete("/{contact_id}", status_code=HTTPStatus.NO_CONTENT)
+def delete_contact(contact_id: UUID, db: Session = Depends(get_transactional_session)):
+    service = ContactService(db)
+    deleted = service.delete_contact(contact_id)
+    if not deleted:
+        raise HTTPException(status_code=404, detail="Contact not found")

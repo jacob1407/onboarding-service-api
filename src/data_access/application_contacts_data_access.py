@@ -54,3 +54,8 @@ class ApplicationContactDataAccess:
                 for contact_id in new_contact_ids
             ]
         )
+
+    def delete_by_contact_id(self, contact_id: UUID):
+        self.db.query(ApplicationContactsModel).filter(
+            ApplicationContactsModel.contact_id == contact_id
+        ).delete()

@@ -46,3 +46,10 @@ class ContactDataAccess:
         contact.last_name = data.last_name
         contact.email = data.email
         return contact
+
+    def delete_contact(self, contact_id: UUID):
+        contact = (
+            self.db.query(ContactModel).filter(ContactModel.id == contact_id).first()
+        )
+        if contact:
+            self.db.delete(contact)

@@ -64,4 +64,3 @@ class ApplicationContactDataAccess:
         self.db.query(ApplicationContactsModel).filter(
             ApplicationContactsModel.application_id == application_id
         ).delete()
-        self.db.commit()

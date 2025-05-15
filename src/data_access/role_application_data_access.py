@@ -45,3 +45,8 @@ class RoleApplicationDataAccess:
             .filter(RoleApplicationModel.role_id == role_id)
             .all()
         )
+
+    def delete_by_application_id(self, application_id: UUID):
+        self.db.query(RoleApplicationModel).filter(
+            RoleApplicationModel.application_id == application_id
+        ).delete()

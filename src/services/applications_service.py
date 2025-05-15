@@ -10,6 +10,7 @@ from ..schemas.applications_schema import (
 )
 from ..data_access.application_data_access import ApplicationDataAccess
 from ..data_access.application_contacts_data_access import ApplicationContactDataAccess
+from ..data_access.role_application_data_access import RoleApplicationDataAccess
 from uuid import UUID
 
 
@@ -19,6 +20,7 @@ class ApplicationService:
         self.application_contacts_service = ApplicationContactsService(db)
         self.contact_service = ContactService(db)
         self.application_contacts_data_access = ApplicationContactDataAccess(db)
+        self.role_applications_data_access = RoleApplicationDataAccess(db)
 
     def create_application(
         self, data: CreateApplicationRequestModel
@@ -95,5 +97,6 @@ class ApplicationService:
         if not application:
             return False
         self.application_contacts_data_access.delete_by_application_id(application_id)
+        self.role_applications_data_access.delete_by_application_id(application_id)
         self.data_access.delete(application_id)
         return True

@@ -13,6 +13,7 @@ class CreateUserRequestModel(BaseModel):
     email: str
     username: str
     type: UserType
+    password: str
     organisation_id: UUID
 
 

@@ -6,7 +6,7 @@ from ..schemas.roles_schema import (
     GetRolesResponseModel,
 )
 from ..services.roles_service import RolesService
-from ..db import get_transactional_session
+from ..db.db import get_transactional_session
 
 router = APIRouter()
 

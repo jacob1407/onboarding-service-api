@@ -1,6 +1,6 @@
 from sqlalchemy import Column, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
-from ..db import Base
+from ..db.db import Base
 
 
 class ApplicationContactsModel(Base):

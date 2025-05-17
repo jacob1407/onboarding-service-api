@@ -1,5 +1,7 @@
 from sqlalchemy.orm import Session
 
+from ..models.user_model import UserModel
+
 from ..data_access.onboarding_data_access import EmployeeOnboardingDataAccess
 from ..services.roles_service import RolesService
 from ..data_access.user_data_access import UserDataAccess
@@ -22,7 +24,7 @@ class UsersService:
 
     def create_user(self, data: CreateUserRequestModel) -> GetUserResponseModel:
         user = self.__data_access.create_user(data)
-        return GetUserResponseModel.model_validate(user)
+        return GetUserResponseModel.model_validate(UserModel)
 
     def get_all_users(self, user_type: str = None) -> list[GetUserResponseModel]:
         users = self.__data_access.get_all_users(user_type)
@@ -31,6 +33,9 @@ class UsersService:
     def get_user_by_id(self, user_id: str) -> GetUserResponseModel | None:
         user = self.__data_access.get_user_by_id(user_id)
         return GetUserResponseModel.model_validate(user) if user else None
+
+    def get_user_by_username(self, username: str) -> UserModel | None:
+        return self.__data_access.get_user_by_username(username)
 
     def update_user(
         self, user_id: str, data: CreateUserRequestModel

@@ -13,7 +13,7 @@ import uuid
 
 from .onboarding_model import OnboardingModel
 
-from ..db import Base
+from ..db.db import Base
 from ..enums.user_status import UserStatus
 from ..enums.user_type import UserType
 

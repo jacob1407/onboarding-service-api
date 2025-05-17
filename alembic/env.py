@@ -14,7 +14,7 @@ load_dotenv()
 sys.path.append(os.path.abspath(os.path.join(os.getcwd(), "src")))
 
 
-from src.db import Base
+from db.db import Base
 from src.models import (
     organisation_model,
     admin_model,

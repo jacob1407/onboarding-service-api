@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from ..db import get_db
+from ..db.db import get_db
 
 from ..models.organisation_model import OrganisationModel
 

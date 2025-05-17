@@ -11,7 +11,7 @@ from ..schemas.onboarding_requests_schema import (
 
 from ..services.onboarding_request_service import OnboardingRequestsService
 
-from ..db import get_transactional_session
+from ..db.db import get_transactional_session
 from ..services.onboarding_service import OnboardingService
 
 router = APIRouter()

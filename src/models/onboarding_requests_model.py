@@ -3,7 +3,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
 from ..enums.employee_onboarding_request_status import EmployeeOnboardingRequestStatus
-from ..db import Base
+from ..db.db import Base
 import uuid
 
 

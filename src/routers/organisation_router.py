@@ -2,7 +2,7 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from ..db import get_db, get_transactional_session
+from ..db.db import get_db, get_transactional_session
 from ..services.organisation_service import OrganisationService
 from ..schemas.organisation_schema import (
     CreateOrganisationRequestModel,

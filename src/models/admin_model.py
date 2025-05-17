@@ -1,7 +1,7 @@
 from uuid import uuid4
 from sqlalchemy import Column, DateTime, String, ForeignKey, func
 from sqlalchemy.dialects.postgresql import UUID
-from ..db import Base
+from ..db.db import Base
 
 
 class AdminModel(Base):

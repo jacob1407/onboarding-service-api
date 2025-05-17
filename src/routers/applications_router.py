@@ -7,7 +7,7 @@ from ..schemas.applications_schema import (
     GetApplicationsResponseModel,
 )
 from ..services.applications_service import ApplicationService
-from ..db import get_transactional_session
+from ..db.db import get_transactional_session
 
 router = APIRouter()
 

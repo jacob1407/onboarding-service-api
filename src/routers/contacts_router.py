@@ -7,7 +7,7 @@ from ..schemas.contact_schema import (
     GetContactResponseModel,
 )
 from ..services.contacts_service import ContactService
-from ..db import get_transactional_session
+from ..db.db import get_transactional_session
 
 router = APIRouter()
 

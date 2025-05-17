@@ -5,7 +5,7 @@ from sqlalchemy.orm import relationship
 
 
 from ..enums.employee_onboarding_status import EmployeeOnboardingStatus
-from ..db import Base
+from ..db.db import Base
 
 
 class OnboardingModel(Base):

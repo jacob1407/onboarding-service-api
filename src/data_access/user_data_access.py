@@ -1,5 +1,5 @@
-import uuid
 from sqlalchemy.orm import Session, joinedload
+
 
 from ..enums.user_type import UserType
 from ..models.onboarding_model import OnboardingModel
@@ -12,18 +12,7 @@ class UserDataAccess:
     def __init__(self, db: Session):
         self.db = db
 
-    def create_user(self, data: CreateUserRequestModel) -> UserModel:
-        user = UserModel(
-            id=uuid.uuid4(),
-            first_name=data.first_name,
-            last_name=data.last_name,
-            email=data.email,
-            username=data.username,
-            password_hash="",
-            organisation_id=data.organisation_id,
-            type=data.type,
-            status="inactive",
-        )
+    def create_user(self, user: UserModel) -> UserModel:
         self.db.add(user)
         self.db.flush()
         return user
@@ -59,3 +48,6 @@ class UserDataAccess:
             .filter(UserModel.type == UserType.employee)
             .all()
         )
+
+    def get_user_by_username(self, username: str) -> UserModel | None:
+        return self.db.query(UserModel).filter(UserModel.username == username).first()

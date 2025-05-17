@@ -1,7 +1,7 @@
 import uuid
 from sqlalchemy import Column, DateTime, String, func
 from sqlalchemy.dialects.postgresql import UUID
-from ..db import Base
+from ..db.db import Base
 
 
 class OrganisationModel(Base):

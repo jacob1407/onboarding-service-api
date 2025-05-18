@@ -50,23 +50,37 @@ def get_current_user(
     try:
         payload = decode_access_token(token)
         user_id: str = payload.get("user_id")
+        organisation_id: str = payload.get("organisation_id")
         if user_id is None:
             raise HTTPException(status_code=401, detail="Invalid token")
         user = user_data_access.get_user_by_id(user_id)
         if user is None:
             raise HTTPException(status_code=401, detail="User not found")
-        return user
+        return {"user": user, "org_id": organisation_id}
     except JWTError:
         raise HTTPException(status_code=401, detail="Invalid token")
 
 
-def require_user_type(*allowed_types: UserType):
-    def dependency(user=Depends(get_current_user)):
-        if user.type not in allowed_types:
+def check_user_auth(
+    token: str = Depends(oauth2_scheme), db=Depends(get_transactional_session)
+):
+    user_data_access = UserDataAccess(db)
+    try:
+        payload = decode_access_token(token)
+        user_id: str = payload.get("user_id")
+        organisation_id: str = payload.get("organisation_id")
+        if user_id is None:
+            raise HTTPException(status_code=401, detail="Invalid token")
+        user = user_data_access.get_user_by_id(user_id)
+        if user is None:
+            raise HTTPException(status_code=401, detail="User not found")
+        if user.type not in [
+            UserType.admin,
+        ]:
             raise HTTPException(
                 status_code=HTTPStatus.FORBIDDEN,
                 detail="Not authorized for this action",
             )
-        return user
-
-    return dependency
+        return TokenData(user_id=user_id, organisation_id=organisation_id)
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Invalid token")

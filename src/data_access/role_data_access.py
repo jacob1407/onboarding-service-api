@@ -9,11 +9,11 @@ class RoleDataAccess:
     def __init__(self, db: Session):
         self.db = db
 
-    def create_role(self, role: CreateRoleRequestModel) -> RoleModel:
+    def create_role(self, role: CreateRoleRequestModel, org_id: UUID) -> RoleModel:
         role = RoleModel(
             name=role.name,
             code=role.code,
-            organisation_id=role.organisation_id,
+            organisation_id=org_id,
             description=role.description,
         )
         self.db.add(role)

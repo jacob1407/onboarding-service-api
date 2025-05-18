@@ -8,7 +8,7 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     user_id: str
-    org_id: str
+    organisation_id: str
 
 
 class LoginRequest(BaseModel):

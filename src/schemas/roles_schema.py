@@ -10,7 +10,6 @@ from ..schemas.applications_schema import (
 class CreateRoleRequestModel(BaseModel):
     name: str
     application_ids: List[UUID]
-    organisation_id: UUID
     description: str | None = None
 
     @computed_field

@@ -12,9 +12,35 @@ from .routers.employees_router import router as employees_router
 
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import Depends, FastAPI
+from fastapi.responses import JSONResponse
+from fastapi.exceptions import HTTPException
+import logging
 
 app = FastAPI()
 
+# Initialize logger
+logger = logging.getLogger("uvicorn.error")
+
+
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request, exc: HTTPException):
+    logger.error(f"HTTPException: {exc.detail}")
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"detail": exc.detail},
+    )
+
+
+@app.exception_handler(Exception)
+async def generic_exception_handler(request, exc: Exception):
+    logger.error(f"Unhandled Exception: {str(exc)}")
+    return JSONResponse(
+        status_code=500,
+        content={"detail": "An unexpected error occurred. Please try again later."},
+    )
+
+
+app.include_router(health_router, prefix="/health")
 app.include_router(
     roles_router,
     prefix="/roles",

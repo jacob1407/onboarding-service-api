@@ -66,7 +66,7 @@ def login(
         )
 
     token = create_access_token(
-        TokenData(user_id=str(user.id), org_id=str(user.organisation_id))
+        TokenData(user_id=str(user.id), organisation_id=str(user.organisation_id))
     )
     return {"access_token": token}
 
@@ -87,6 +87,6 @@ def register(
         raise HTTPException(status_code=400, detail="User already exists")
 
     token = create_access_token(
-        TokenData(user_id=str(user.id), org_id=str(user.organisation_id))
+        TokenData(user_id=str(user.id), organisation_id=str(user.organisation_id))
     )
     return {"access_token": token}

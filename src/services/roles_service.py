@@ -1,4 +1,6 @@
+from uuid import UUID
 from sqlalchemy.orm import Session
+from fastapi import HTTPException
 
 from ..services.applications_service import ApplicationService
 from ..data_access.role_data_access import RoleDataAccess
@@ -12,12 +14,14 @@ from ..schemas.roles_schema import (
 
 class RolesService:
     def __init__(self, db: Session):
-        self.__dao = RoleDataAccess(db)
+        self.__data_access = RoleDataAccess(db)
         self.__role_application_service = RoleApplicationsService(db)
         self.applications_service = ApplicationService(db)
 
-    def create_role(self, data: CreateRoleRequestModel) -> GetRolesResponseModel:
-        role = self.__dao.create_role(data)
+    def create_role(
+        self, data: CreateRoleRequestModel, org_id: UUID
+    ) -> GetRolesResponseModel:
+        role = self.__data_access.create_role(data, org_id)
 
         if len(data.application_ids) > 0:
             self.__role_application_service.associate_applications_to_role(
@@ -34,16 +38,25 @@ class RolesService:
         )
 
     def get_all_roles_by_org_id(self, org_id: str) -> list[GetRolesResponseModel]:
-        roles = self.__dao.get_all_roles_by_org_id(org_id)
+        roles = self.__data_access.get_all_roles_by_org_id(org_id)
         return [GetRolesResponseModel.model_validate(r) for r in roles]
 
     def get_role_by_id(self, role_id: str) -> GetRolesResponseModel | None:
-        return GetRolesResponseModel.model_validate(self.__dao.get_role_by_id(role_id))
+        return GetRolesResponseModel.model_validate(
+            self.__data_access.get_role_by_id(role_id)
+        )
 
-    def get_role_details_by_id(self, role_id: str) -> GetRoleResponseModel | None:
-        role = self.__dao.get_role_by_id(role_id)
+    def get_role_details_by_id(
+        self, role_id: str, auth_organisation_id: str
+    ) -> GetRoleResponseModel | None:
+        role = self.__data_access.get_role_by_id(role_id)
         if not role:
             return None
+
+        if role.organisation_id != auth_organisation_id:
+            raise HTTPException(
+                status_code=401, detail="User does not have access to view this role"
+            )
 
         applications = self.__role_application_service.get_applications_by_role_id(
             role_id
@@ -58,13 +71,18 @@ class RolesService:
         )
 
     def update_role(
-        self, role_id: str, data: CreateRoleRequestModel
+        self, role_id: str, data: CreateRoleRequestModel, auth_organisation_id: str
     ) -> GetRolesResponseModel | None:
-        role = self.__dao.get_role_by_id(role_id)
+        role = self.__data_access.get_role_by_id(role_id)
         if not role:
             return None
 
-        updated_role = self.__dao.update_role(role_id, data)
+        if role.organisation_id != auth_organisation_id:
+            raise HTTPException(
+                status_code=401, detail="User does not have access to update this role"
+            )
+
+        updated_role = self.__data_access.update_role(role_id, data)
         self.__role_application_service.update_role_applications(
             role_id, data.application_ids
         )

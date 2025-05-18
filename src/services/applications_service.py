@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from fastapi import HTTPException
 
 from ..services.contacts_service import ContactService
 
@@ -23,9 +24,9 @@ class ApplicationService:
         self.role_applications_data_access = RoleApplicationDataAccess(db)
 
     def create_application(
-        self, data: CreateApplicationRequestModel
+        self, data: CreateApplicationRequestModel, organisation_id: UUID
     ) -> GetApplicationResponseModel:
-        app = self.data_access.create(data)
+        app = self.data_access.create(data, organisation_id)
         if data.contact_ids:
             self.application_contacts_service.associate_contacts_to_application(
                 app.id, data.contact_ids
@@ -35,7 +36,6 @@ class ApplicationService:
             id=app.id,
             name=app.name,
             code=app.code,
-            organisation_id=app.organisation_id,
             description=app.description,
             contacts=contacts,
         )
@@ -46,21 +46,27 @@ class ApplicationService:
         apps = self.data_access.get_by_org_id(org_id)
         return [GetApplicationsResponseModel.model_validate(app) for app in apps]
 
-    def get_application_by_id(self, app_id: UUID) -> GetApplicationResponseModel | None:
-        app = self.data_access.get_by_id(app_id)
-        if not app:
+    def get_application_by_id(
+        self, application_id: UUID, auth_organisation_id: str
+    ) -> GetApplicationResponseModel | None:
+        application = self.data_access.get_by_id(application_id)
+        if not application:
             return None
 
+        if str(application.organisation_id) != auth_organisation_id:
+            raise HTTPException(
+                status_code=401,
+                detail="User does not have access to view this application",
+            )
         contacts = self.application_contacts_service.get_contacts_by_application_id(
-            app_id
+            application.id
         )
 
         return GetApplicationResponseModel(
-            id=app.id,
-            name=app.name,
-            code=app.code,
-            organisation_id=app.organisation_id,
-            description=app.description,
+            id=application.id,
+            name=application.name,
+            code=application.code,
+            description=application.description,
             contacts=contacts,
         )
 
@@ -71,26 +77,23 @@ class ApplicationService:
         return [GetApplicationResponseModel.model_validate(app) for app in apps]
 
     def update_application(
-        self, application_id: UUID, data: CreateApplicationRequestModel
+        self,
+        application_id: UUID,
+        data: CreateApplicationRequestModel,
+        auth_organisation_id: str,
     ) -> GetApplicationResponseModel | None:
-        app = self.data_access.get_by_id(application_id)
-        if not app:
+        application = self.data_access.get_by_id(application_id)
+        if not application:
             return None
 
-        updated_app = self.data_access.update(application_id, data)
-        self.application_contacts_service.update_application_contacts(
-            application_id, data.contact_ids or []
-        )
-        contacts = self.contact_service.get_contacts_by_ids(data.contact_ids or [])
+        if str(application.organisation_id) != auth_organisation_id:
+            raise HTTPException(
+                status_code=401,
+                detail="User does not have access to update this application",
+            )
 
-        return GetApplicationResponseModel(
-            id=updated_app.id,
-            name=updated_app.name,
-            code=updated_app.code,
-            organisation_id=updated_app.organisation_id,
-            description=updated_app.description,
-            contacts=contacts,
-        )
+        updated_application = self.data_access.update(application_id, data)
+        return GetApplicationResponseModel.model_validate(updated_application)
 
     def delete_application(self, application_id: UUID) -> bool:
         application = self.data_access.get_by_id(application_id)

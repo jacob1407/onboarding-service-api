@@ -7,7 +7,6 @@ from ..schemas.contact_schema import GetContactResponseModel
 
 class CreateApplicationRequestModel(BaseModel):
     name: str
-    organisation_id: UUID
     description: Optional[str] = None
     contact_ids: list[UUID]
 
@@ -21,7 +20,6 @@ class GetApplicationResponseModel(BaseModel):
     id: UUID
     name: str
     code: str
-    organisation_id: UUID
     description: Optional[str] = None
     contacts: list[GetContactResponseModel]
 
@@ -32,7 +30,6 @@ class GetApplicationsResponseModel(BaseModel):
     id: UUID
     name: str
     code: str
-    organisation_id: UUID
     description: Optional[str] = None
 
     model_config = {"from_attributes": True}

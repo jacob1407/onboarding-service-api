@@ -6,7 +6,9 @@ from ..schemas.applications_schema import (
     GetApplicationResponseModel,
     GetApplicationsResponseModel,
 )
+from ..schemas.auth import TokenData
 from ..services.applications_service import ApplicationService
+from ..services.security import check_user_auth
 from ..db.db import get_transactional_session
 
 router = APIRouter()
@@ -16,25 +18,29 @@ router = APIRouter()
 def create_application(
     data: CreateApplicationRequestModel,
     db: Session = Depends(get_transactional_session),
+    auth_data: TokenData = Depends(check_user_auth),
 ):
     service = ApplicationService(db)
-    return service.create_application(data)
+    return service.create_application(data, auth_data.organisation_id)
 
 
 @router.get("/", response_model=list[GetApplicationsResponseModel])
 def get_applications(
-    organisation_id: UUID, db: Session = Depends(get_transactional_session)
+    db: Session = Depends(get_transactional_session),
+    auth_data: TokenData = Depends(check_user_auth),
 ):
     service = ApplicationService(db)
-    return service.get_applications_by_org_id(organisation_id)
+    return service.get_applications_by_org_id(auth_data.organisation_id)
 
 
 @router.get("/{application_id}", response_model=GetApplicationResponseModel)
 def get_application(
-    application_id: UUID, db: Session = Depends(get_transactional_session)
+    application_id: UUID,
+    db: Session = Depends(get_transactional_session),
+    auth_data: TokenData = Depends(check_user_auth),
 ):
     service = ApplicationService(db)
-    app = service.get_application_by_id(application_id)
+    app = service.get_application_by_id(application_id, auth_data.organisation_id)
     if not app:
         raise HTTPException(status_code=404, detail="Application not found")
     return app
@@ -45,9 +51,12 @@ def update_application(
     application_id: UUID,
     data: CreateApplicationRequestModel,
     db: Session = Depends(get_transactional_session),
+    auth_data: TokenData = Depends(check_user_auth),
 ):
     service = ApplicationService(db)
-    updated = service.update_application(application_id, data)
+    updated = service.update_application(
+        application_id, data, auth_data.organisation_id
+    )
     if not updated:
         raise HTTPException(status_code=404, detail="Application not found")
     return updated

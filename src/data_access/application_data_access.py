@@ -11,12 +11,14 @@ class ApplicationDataAccess:
     def __init__(self, db: Session):
         self.db = db
 
-    def create(self, data: CreateApplicationRequestModel) -> ApplicationModel:
+    def create(
+        self, data: CreateApplicationRequestModel, org_id: UUID
+    ) -> ApplicationModel:
         app = ApplicationModel(
             id=uuid.uuid4(),
             name=data.name,
             code=to_snake_case(data.name),
-            organisation_id=data.organisation_id,
+            organisation_id=org_id,
             description=data.description,
         )
         self.db.add(app)

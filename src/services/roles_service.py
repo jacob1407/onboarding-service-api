@@ -53,7 +53,7 @@ class RolesService:
         if not role:
             return None
 
-        if role.organisation_id != auth_organisation_id:
+        if str(role.organisation_id) != auth_organisation_id:
             raise HTTPException(
                 status_code=401, detail="User does not have access to view this role"
             )
@@ -77,7 +77,7 @@ class RolesService:
         if not role:
             return None
 
-        if role.organisation_id != auth_organisation_id:
+        if str(role.organisation_id) != auth_organisation_id:
             raise HTTPException(
                 status_code=401, detail="User does not have access to update this role"
             )

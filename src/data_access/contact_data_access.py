@@ -23,10 +23,14 @@ class ContactDataAccess:
         return contact
 
     def get_by_org_id(self, org_id: UUID) -> list[ContactModel]:
-        return self.db.query(ContactModel).filter_by(organisation_id=org_id).all()
+        return (
+            self.db.query(ContactModel)
+            .filter(ContactModel.organisation_id == org_id)
+            .all()
+        )
 
     def get_by_id(self, contact_id: UUID) -> ContactModel | None:
-        return self.db.query(ContactModel).filter_by(id=contact_id).first()
+        return self.db.query(ContactModel).filter(ContactModel.id == contact_id).first()
 
     def get_by_ids(self, contact_ids: list[UUID]) -> list[ContactModel]:
         return (

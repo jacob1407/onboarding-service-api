@@ -8,7 +8,6 @@ class CreateContactRequestModel(BaseModel):
     last_name: str
     email: str
     external_id: Optional[str] = None
-    organisation_id: UUID
 
 
 class GetContactResponseModel(BaseModel):

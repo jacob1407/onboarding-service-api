@@ -95,10 +95,15 @@ class ApplicationService:
         updated_application = self.data_access.update(application_id, data)
         return GetApplicationResponseModel.model_validate(updated_application)
 
-    def delete_application(self, application_id: UUID) -> bool:
+    def delete_application(self, application_id: UUID, org_id: UUID) -> bool:
         application = self.data_access.get_by_id(application_id)
         if not application:
             return False
+        if str(application.organisation_id) != org_id:
+            raise HTTPException(
+                status_code=401,
+                detail="User does not have access to delete this application",
+            )
         self.application_contacts_data_access.delete_by_application_id(application_id)
         self.role_applications_data_access.delete_by_application_id(application_id)
         self.data_access.delete(application_id)

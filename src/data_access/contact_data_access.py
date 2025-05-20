@@ -9,14 +9,14 @@ class ContactDataAccess:
     def __init__(self, db: Session):
         self.db = db
 
-    def create(self, data: CreateContactRequestModel) -> ContactModel:
+    def create(self, data: CreateContactRequestModel, org_id: UUID) -> ContactModel:
         contact = ContactModel(
             id=uuid.uuid4(),
             first_name=data.first_name,
             last_name=data.last_name,
             email=data.email,
             external_id=data.external_id,
-            organisation_id=data.organisation_id,
+            organisation_id=org_id,
         )
         self.db.add(contact)
         self.db.flush()

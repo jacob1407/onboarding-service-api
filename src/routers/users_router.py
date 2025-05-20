@@ -1,7 +1,10 @@
 from http import HTTPStatus
+from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
+
+from ..enums.user_type import UserType
 
 from ..schemas.auth import Token, TokenData
 from ..services.security import create_access_token, verify_password
@@ -26,13 +29,15 @@ def create_user(
 
 
 @router.get("/", response_model=list[GetUserResponseModel])
-def get_users(user_type: str = None, db: Session = Depends(get_transactional_session)):
+def get_users(
+    user_type: UserType | None = None, db: Session = Depends(get_transactional_session)
+):
     service = UsersService(db)
     return service.get_all_users(user_type=user_type)
 
 
 @router.get("/{user_id}", response_model=GetUserResponseModel)
-def get_user(user_id: str, db: Session = Depends(get_transactional_session)):
+def get_user(user_id: UUID, db: Session = Depends(get_transactional_session)):
     service = UsersService(db)
     user = service.get_user_by_id(user_id)
     if not user:
@@ -42,7 +47,7 @@ def get_user(user_id: str, db: Session = Depends(get_transactional_session)):
 
 @router.put("/{user_id}", response_model=GetUserResponseModel)
 def update_user(
-    user_id: str,
+    user_id: UUID,
     data: CreateUserRequestModel,
     db: Session = Depends(get_transactional_session),
 ):

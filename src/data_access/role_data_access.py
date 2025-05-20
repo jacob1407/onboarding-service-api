@@ -1,4 +1,5 @@
 from uuid import UUID
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
 from ..schemas.roles_schema import CreateRoleRequestModel
@@ -25,11 +26,13 @@ class RoleDataAccess:
             self.db.query(RoleModel).filter(RoleModel.organisation_id == org_id).all()
         )
 
-    def get_role_by_id(self, role_id: str) -> RoleModel | None:
+    def get_role_by_id(self, role_id: UUID) -> RoleModel | None:
         return self.db.query(RoleModel).filter(RoleModel.id == role_id).first()
 
-    def update_role(self, role_id: str, data: CreateRoleRequestModel) -> RoleModel:
+    def update_role(self, role_id: UUID, data: CreateRoleRequestModel) -> RoleModel:
         role = self.get_role_by_id(role_id)
+        if not role:
+            raise HTTPException(status_code=404, detail="Role not found")
         role.name = data.name
         role.description = data.description
         return role

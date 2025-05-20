@@ -1,34 +1,48 @@
+from typing import TYPE_CHECKING
 import uuid
-from sqlalchemy import Column, DateTime, ForeignKey, String, func
-from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import relationship
+from datetime import datetime
+from uuid import UUID as PyUUID
+
+from sqlalchemy import String, DateTime, ForeignKey, func
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+
 from ..db.db import Base
+
+if TYPE_CHECKING:
+    from .onboarding_model import OnboardingModel  # type checker only
 
 
 class RoleModel(Base):
     __tablename__ = "roles"
 
-    id = Column(
-        UUID(as_uuid=True),
+    id: Mapped[PyUUID] = mapped_column(
         primary_key=True,
         default=uuid.uuid4,
         unique=True,
         nullable=False,
     )
-    name = Column(String, nullable=False, unique=False)
-    code = Column(String, nullable=False)
-    description = Column(String, nullable=True)
-    organisation_id = Column(
-        UUID(as_uuid=True), ForeignKey("organisations.id"), nullable=False
+
+    name: Mapped[str] = mapped_column(String, nullable=False)
+    code: Mapped[str] = mapped_column(String, nullable=False)
+    description: Mapped[str | None] = mapped_column(String, nullable=True)
+
+    organisation_id: Mapped[PyUUID] = mapped_column(
+        ForeignKey("organisations.id"),
+        nullable=False,
     )
-    created_date = Column(
-        DateTime(timezone=True), server_default=func.now(), nullable=False
+
+    created_date: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        nullable=False,
     )
-    last_updated_date = Column(
+
+    last_updated_date: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
         onupdate=func.now(),
         nullable=False,
     )
 
-    onboardings = relationship("OnboardingModel", back_populates="role")
+    onboardings: Mapped[list["OnboardingModel"]] = relationship(back_populates="role")

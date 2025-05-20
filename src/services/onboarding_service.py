@@ -28,8 +28,8 @@ class OnboardingService:
         self.email_service = EmailService()
         self.onboarding_request_data_access = EmployeeOnboardingRequestDataAccess(db)
 
-    async def start_onboarding(self, user_id: str) -> UUID:
-        employee, onboarding = self._validate_and_get_onboarding(user_id)
+    async def start_onboarding(self, user_id: UUID, org_id: UUID) -> UUID:
+        employee, onboarding = self._validate_and_get_onboarding(user_id, org_id)
 
         applications = (
             self.role_application_data_access.get_all_applications_by_role_id(
@@ -50,7 +50,7 @@ class OnboardingService:
 
         return onboarding.id
 
-    def _validate_and_get_onboarding(self, user_id: str):
+    def _validate_and_get_onboarding(self, user_id: UUID, org_id: UUID):
         employee = self.user_data_access.get_user_by_id(user_id)
         onboarding = self.employee_onboarding_data_access.get_onboarding_by_user_id(
             user_id
@@ -59,13 +59,25 @@ class OnboardingService:
         if not employee or not onboarding:
             raise ValueError("User or onboarding record not found")
 
-        if onboarding.status == EmployeeOnboardingStatus.in_progress:
+        if employee.organisation_id != org_id:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="User does not have access to this onboarding process",
+            )
+
+        if (
+            EmployeeOnboardingStatus(onboarding.status)
+            == EmployeeOnboardingStatus.in_progress
+        ):
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
                 detail="Onboarding process is already in progress.",
             )
 
-        if onboarding.status == EmployeeOnboardingStatus.complete:
+        if (
+            EmployeeOnboardingStatus(onboarding.status)
+            == EmployeeOnboardingStatus.complete
+        ):
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
                 detail="Onboarding process is already complete.",
@@ -101,7 +113,9 @@ class OnboardingService:
 
         return request_email_information
 
-    async def _send_emails(self, request_email_information, employee: UserModel):
+    async def _send_emails(
+        self, request_email_information: list[dict], employee: UserModel
+    ):
         """Send onboarding emails asynchronously."""
         requests = [
             self.email_service.send_application_request_email(

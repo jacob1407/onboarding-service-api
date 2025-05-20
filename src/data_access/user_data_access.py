@@ -1,3 +1,5 @@
+from uuid import UUID
+from fastapi import HTTPException
 from sqlalchemy.orm import Session, joinedload
 
 
@@ -12,22 +14,35 @@ class UserDataAccess:
     def __init__(self, db: Session):
         self.db = db
 
-    def create_user(self, user: UserModel) -> UserModel:
+    def create_user(self, user: CreateUserRequestModel) -> UserModel:
+        new_user = UserModel(
+            first_name=user.first_name,
+            last_name=user.last_name,
+            email=user.email,
+            username=user.username,
+            password=user.password,
+            type=user.type,
+            organisation_id=user.organisation_id,
+        )
         self.db.add(user)
         self.db.flush()
-        return user
+        return new_user
 
-    def get_all_users(self, user_type: str = None) -> list[UserModel]:
+    def get_all_users(self, user_type: UserType | None = None) -> list[UserModel]:
         query = self.db.query(UserModel)
         if user_type:
             query = query.filter(UserModel.type == user_type)
         return query.all()
 
-    def get_user_by_id(self, user_id: str) -> UserModel | None:
+    def get_user_by_id(self, user_id: UUID) -> UserModel | None:
         return self.db.query(UserModel).filter(UserModel.id == user_id).first()
 
-    def update_user(self, user_id: str, data: CreateUserRequestModel) -> UserModel:
+    def update_user(self, user_id: UUID, data: CreateUserRequestModel) -> UserModel:
         user = self.get_user_by_id(user_id)
+
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+
         user.first_name = data.first_name
         user.last_name = data.last_name
         user.email = data.email

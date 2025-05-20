@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from ..models.onboarding_model import OnboardingModel
 from ..enums.employee_onboarding_status import EmployeeOnboardingStatus
-from sqlalchemy.dialects.postgresql import UUID
+from uuid import UUID
 
 
 class EmployeeOnboardingDataAccess:
@@ -19,11 +19,7 @@ class EmployeeOnboardingDataAccess:
         return onboarding
 
     def get_onboarding_by_user_id(self, user_id: UUID) -> OnboardingModel | None:
-        return (
-            self.db.query(OnboardingModel)
-            .filter(OnboardingModel.user_id == user_id)
-            .first()
-        )
+        return self.db.query(OnboardingModel).filter_by(user_id=user_id).first()
 
     def update_employee_role(self, user_id: UUID, role_id: UUID) -> OnboardingModel:
         onboarding = self.get_onboarding_by_user_id(user_id)
@@ -46,6 +42,10 @@ class EmployeeOnboardingDataAccess:
     def update_onboarding_status(
         self, onboarding_id: UUID, new_status: EmployeeOnboardingStatus
     ) -> None:
-        onboarding = self.db.query(OnboardingModel).filter_by(id=onboarding_id).first()
+        onboarding = (
+            self.db.query(OnboardingModel)
+            .filter(OnboardingModel.id == onboarding_id)
+            .first()
+        )
         if onboarding:
             onboarding.status = new_status

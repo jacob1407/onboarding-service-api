@@ -14,7 +14,7 @@ load_dotenv()
 sys.path.append(os.path.abspath(os.path.join(os.getcwd(), "src")))
 
 
-from db.db import Base
+from src.db.db import Base
 from src.models import (
     organisation_model,
     admin_model,
@@ -63,7 +63,7 @@ def run_migrations_offline():
 # Online migration mode
 def run_migrations_online():
     connectable = engine_from_config(
-        config.get_section(config.config_ini_section),
+        config.get_section(config.config_ini_section),  # type: ignore
         prefix="sqlalchemy.",
         poolclass=pool.NullPool,
     )

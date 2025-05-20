@@ -1,32 +1,60 @@
-from sqlalchemy import Column, DateTime, ForeignKey, Enum
-from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import relationship
+import uuid
+from datetime import datetime
+from uuid import UUID as PyUUID
+from typing import TYPE_CHECKING
+
+from sqlalchemy import DateTime, Enum as SAEnum, ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ..enums.employee_onboarding_request_status import EmployeeOnboardingRequestStatus
 from ..db.db import Base
-import uuid
+
+if TYPE_CHECKING:
+    from .application_model import ApplicationModel
+    from .onboarding_model import OnboardingModel
 
 
 class OnboardingRequestModel(Base):
     __tablename__ = "employee_onboarding_requests"
 
-    id = Column(
-        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, nullable=False
+    id: Mapped[PyUUID] = mapped_column(
+        primary_key=True,
+        default=uuid.uuid4,
+        nullable=False,
     )
-    onboarding_id = Column(
-        UUID(as_uuid=True), ForeignKey("employee_onboardings.id"), nullable=False
-    )
-    application_id = Column(
-        UUID(as_uuid=True), ForeignKey("applications.id"), nullable=False
-    )
-    status = Column(
-        Enum(EmployeeOnboardingRequestStatus), nullable=False, default="pending"
-    )
-    acknowledged_at = Column(DateTime(timezone=True), nullable=True)
-    acknowledged_by = Column(
-        UUID(as_uuid=True), ForeignKey("contacts.id"), nullable=True
-    )
-    completed_at = Column(DateTime(timezone=True), nullable=True)
 
-    application = relationship("ApplicationModel", back_populates="onboarding_requests")
-    onboarding = relationship("OnboardingModel", back_populates="requests")
+    onboarding_id: Mapped[PyUUID] = mapped_column(
+        ForeignKey("employee_onboardings.id"),
+        nullable=False,
+    )
+
+    application_id: Mapped[PyUUID] = mapped_column(
+        ForeignKey("applications.id"),
+        nullable=False,
+    )
+
+    status: Mapped[EmployeeOnboardingRequestStatus] = mapped_column(
+        SAEnum(EmployeeOnboardingRequestStatus),
+        nullable=False,
+    )
+
+    acknowledged_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True),
+        nullable=True,
+    )
+
+    acknowledged_by: Mapped[PyUUID | None] = mapped_column(
+        ForeignKey("contacts.id"),
+        nullable=True,
+    )
+
+    completed_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True),
+        nullable=True,
+    )
+
+    application: Mapped["ApplicationModel"] = relationship(
+        back_populates="onboarding_requests"
+    )
+
+    onboarding: Mapped["OnboardingModel"] = relationship(back_populates="requests")

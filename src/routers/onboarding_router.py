@@ -3,12 +3,11 @@ from pydantic import BaseModel
 from uuid import UUID
 from sqlalchemy.orm import Session
 
-from ..services.users_service import UsersService
-
+from ..schemas.auth import TokenData
+from ..services.security import check_user_auth
 from ..schemas.onboarding_requests_schema import (
     GetOnboardingRequestResponseModel,
 )
-
 from ..services.onboarding_request_service import OnboardingRequestsService
 
 from ..db.db import get_transactional_session
@@ -23,11 +22,15 @@ class StartOnboardingRequest(BaseModel):
 
 @router.post("/start")
 async def start_onboarding(
-    request: StartOnboardingRequest, db: Session = Depends(get_transactional_session)
+    request: StartOnboardingRequest,
+    db: Session = Depends(get_transactional_session),
+    auth_data: TokenData = Depends(check_user_auth),
 ):
     try:
         service = OnboardingService(db)
-        onboarding_id = await service.start_onboarding(user_id=request.user_id)
+        onboarding_id = await service.start_onboarding(
+            user_id=request.user_id, org_id=auth_data.organisation_id
+        )
         return {
             "message": "Onboarding started and emails sent",
             "onboarding_id": onboarding_id,
@@ -60,4 +63,4 @@ def get_employee_onboarding_requests(
     user_id: UUID, db: Session = Depends(get_transactional_session)
 ):
     service = OnboardingRequestsService(db)
-    return service.get_requests_by_user_id(str(user_id))
+    return service.get_requests_by_user_id(user_id)

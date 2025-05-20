@@ -41,7 +41,7 @@ class ApplicationContactDataAccess:
         )
 
     def update_application_contacts(
-        self, application_id: str, new_contact_ids: list[str]
+        self, application_id: UUID, new_contact_ids: list[UUID]
     ):
         self.db.query(ApplicationContactsModel).filter(
             ApplicationContactsModel.application_id == application_id

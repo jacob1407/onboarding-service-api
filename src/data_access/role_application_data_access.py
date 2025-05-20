@@ -17,14 +17,14 @@ class RoleApplicationDataAccess:
         return record
 
     def get_application_ids_by_role_id(self, role_id: UUID) -> list[UUID]:
-        return [
-            r.application_id
-            for r in self.db.query(RoleApplicationModel)
+        rows = (
+            self.db.query(RoleApplicationModel.application_id)
             .filter_by(role_id=role_id)
             .all()
-        ]
+        )
+        return [row.application_id for row in rows]
 
-    def update_role_applications(self, role_id: str, new_application_ids: list[str]):
+    def update_role_applications(self, role_id: UUID, new_application_ids: list[UUID]):
         self.db.query(RoleApplicationModel).filter(
             RoleApplicationModel.role_id == role_id
         ).delete()

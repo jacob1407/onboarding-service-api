@@ -21,7 +21,7 @@ def create_contact(
     auth_data: TokenData = Depends(check_user_auth),
 ):
     service = ContactService(db)
-    return service.create_contact(data, auth_data.organisation_id)
+    return service.create_contact(data, UUID(auth_data.organisation_id))
 
 
 @router.get("/", response_model=list[GetContactResponseModel])
@@ -30,7 +30,7 @@ def get_contacts(
     auth_data: TokenData = Depends(check_user_auth),
 ):
     service = ContactService(db)
-    return service.get_contacts_by_org_id(auth_data.organisation_id)
+    return service.get_contacts_by_org_id(UUID(auth_data.organisation_id))
 
 
 @router.get("/{contact_id}", response_model=GetContactResponseModel)
@@ -40,7 +40,7 @@ def get_contact(
     auth_data: TokenData = Depends(check_user_auth),
 ):
     service = ContactService(db)
-    contact = service.get_contact_by_id(contact_id, auth_data.organisation_id)
+    contact = service.get_contact_by_id(contact_id, UUID(auth_data.organisation_id))
     if not contact:
         raise HTTPException(status_code=404, detail="Contact not found")
     return contact
@@ -54,7 +54,7 @@ def update_contact(
     auth_data: TokenData = Depends(check_user_auth),
 ):
     service = ContactService(db)
-    updated = service.update_contact(contact_id, data, auth_data.organisation_id)
+    updated = service.update_contact(contact_id, data, UUID(auth_data.organisation_id))
     if not updated:
         raise HTTPException(status_code=404, detail="Contact not found")
     return updated
@@ -67,6 +67,6 @@ def delete_contact(
     auth_data: TokenData = Depends(check_user_auth),
 ):
     service = ContactService(db)
-    deleted = service.delete_contact(contact_id, auth_data.organisation_id)
+    deleted = service.delete_contact(contact_id, UUID(auth_data.organisation_id))
     if not deleted:
         raise HTTPException(status_code=404, detail="Contact not found")

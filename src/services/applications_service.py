@@ -47,7 +47,7 @@ class ApplicationService:
         return [GetApplicationsResponseModel.model_validate(app) for app in apps]
 
     def get_application_by_id(
-        self, application_id: UUID, auth_organisation_id: str
+        self, application_id: UUID, auth_organisation_id: UUID
     ) -> GetApplicationResponseModel | None:
         application = self.data_access.get_by_id(application_id)
         if not application:
@@ -80,7 +80,7 @@ class ApplicationService:
         self,
         application_id: UUID,
         data: CreateApplicationRequestModel,
-        auth_organisation_id: str,
+        auth_organisation_id: UUID,
     ) -> GetApplicationResponseModel | None:
         application = self.data_access.get_by_id(application_id)
         if not application:

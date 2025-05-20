@@ -1,12 +1,20 @@
-from sqlalchemy import Column, ForeignKey
-from sqlalchemy.dialects.postgresql import UUID
+from uuid import UUID as PyUUID
+
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column
+
 from ..db.db import Base
 
 
 class ApplicationContactsModel(Base):
     __tablename__ = "application_contacts"
 
-    application_id = Column(
-        UUID(as_uuid=True), ForeignKey("applications.id"), primary_key=True
+    application_id: Mapped[PyUUID] = mapped_column(
+        ForeignKey("applications.id"),
+        primary_key=True,
     )
-    contact_id = Column(UUID(as_uuid=True), ForeignKey("contacts.id"), primary_key=True)
+
+    contact_id: Mapped[PyUUID] = mapped_column(
+        ForeignKey("contacts.id"),
+        primary_key=True,
+    )

@@ -1,3 +1,4 @@
+from uuid import UUID
 from sqlalchemy.orm import Session
 
 from ..models.user_model import UserModel
@@ -24,13 +25,15 @@ class UsersService:
 
     def create_user(self, data: CreateUserRequestModel) -> GetUserResponseModel:
         user = self.__data_access.create_user(data)
-        return GetUserResponseModel.model_validate(UserModel)
+        return GetUserResponseModel.model_validate(user)
 
-    def get_all_users(self, user_type: str = None) -> list[GetUserResponseModel]:
+    def get_all_users(
+        self, user_type: UserType | None = None
+    ) -> list[GetUserResponseModel]:
         users = self.__data_access.get_all_users(user_type)
         return [GetUserResponseModel.model_validate(u) for u in users]
 
-    def get_user_by_id(self, user_id: str) -> GetUserResponseModel | None:
+    def get_user_by_id(self, user_id: UUID) -> GetUserResponseModel | None:
         user = self.__data_access.get_user_by_id(user_id)
         return GetUserResponseModel.model_validate(user) if user else None
 
@@ -38,7 +41,7 @@ class UsersService:
         return self.__data_access.get_user_by_username(username)
 
     def update_user(
-        self, user_id: str, data: CreateUserRequestModel
+        self, user_id: UUID, data: CreateUserRequestModel
     ) -> GetUserResponseModel | None:
         user = self.__data_access.get_user_by_id(user_id)
         if not user:
@@ -72,12 +75,14 @@ class UsersService:
             role=role,
         )
 
-    def get_employee_by_id(self, user_id: str) -> GetEmployeeResponseModel | None:
+    def get_employee_by_id(self, user_id: UUID) -> GetEmployeeResponseModel | None:
         user = self.__data_access.get_user_by_id(user_id)
         if not user or user.type != UserType.employee:
             return None
 
         onboarding = self.__onboarding_data_access.get_onboarding_by_user_id(user_id)
+        if not onboarding:
+            return None
         role = self.__roles_service.get_role_by_id(onboarding.role_id)
 
         return GetEmployeeResponseModel(
@@ -108,7 +113,7 @@ class UsersService:
         ]
 
     def update_employee(
-        self, user_id: str, data: CreateEmployeeRequestModel
+        self, user_id: UUID, data: CreateEmployeeRequestModel
     ) -> GetEmployeeResponseModel | None:
         user = self.__data_access.get_user_by_id(user_id)
         if not user or user.type != UserType.employee:

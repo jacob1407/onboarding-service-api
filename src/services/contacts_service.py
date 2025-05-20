@@ -49,9 +49,10 @@ class ContactService:
     def update_contact(
         self, contact_id: UUID, data: CreateContactRequestModel, organisation_id: UUID
     ) -> GetContactResponseModel | None:
-        contact = self.data_access.update(contact_id, data, organisation_id)
+        contact = self.data_access.update(contact_id, data)
         if not contact:
-            return None
+            raise HTTPException(status_code=404, detail="Contact not found")
+
         if str(contact.organisation_id) != organisation_id:
             raise HTTPException(
                 status_code=401,

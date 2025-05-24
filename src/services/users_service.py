@@ -14,6 +14,7 @@ from ..schemas.user_schema import (
     CreateUserRequestModel,
     GetEmployeeResponseModel,
     GetUserResponseModel,
+    UpdateUserRequestModel,
 )
 
 
@@ -41,7 +42,7 @@ class UsersService:
         return self.__data_access.get_user_by_username(username)
 
     def update_user(
-        self, user_id: UUID, data: CreateUserRequestModel
+        self, user_id: UUID, data: UpdateUserRequestModel
     ) -> GetUserResponseModel | None:
         user = self.__data_access.get_user_by_id(user_id)
         if not user:
@@ -50,12 +51,12 @@ class UsersService:
         return GetUserResponseModel.model_validate(updated_user)
 
     def create_employee(
-        self, data: CreateEmployeeRequestModel
+        self, data: CreateEmployeeRequestModel, org_id: UUID
     ) -> GetEmployeeResponseModel:
         if data.type != UserType.employee:
             raise ValueError("User type must be 'employee' to create an employee")
 
-        user = self.__data_access.create_user(data)
+        user = self.__data_access.create_user(data, org_id)
 
         # Create employee onboarding record
         self.__onboarding_data_access.create_onboarding(
@@ -71,7 +72,6 @@ class UsersService:
             username=user.username,
             status=user.status,
             type=user.type,
-            organisation_id=user.organisation_id,
             role=role,
         )
 
@@ -93,13 +93,12 @@ class UsersService:
             username=user.username,
             status=user.status,
             type=user.type,
-            organisation_id=user.organisation_id,
             role=role,
             onboarding_status=onboarding.status if onboarding else None,
         )
 
-    def get_all_employees(self) -> list[GetEmployeeResponseModel]:
-        records = self.__data_access.get_all_employees()
+    def get_all_employees(self, org_id: UUID) -> list[GetEmployeeResponseModel]:
+        records = self.__data_access.get_all_employees_by_org_id(org_id)
         return [
             GetEmployeeResponseModel.model_validate(
                 {
@@ -113,7 +112,7 @@ class UsersService:
         ]
 
     def update_employee(
-        self, user_id: UUID, data: CreateEmployeeRequestModel
+        self, user_id: UUID, data: UpdateUserRequestModel
     ) -> GetEmployeeResponseModel | None:
         user = self.__data_access.get_user_by_id(user_id)
         if not user or user.type != UserType.employee:

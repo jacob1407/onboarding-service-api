@@ -26,7 +26,11 @@ class ApplicationDataAccess:
         return app
 
     def get_by_org_id(self, org_id: UUID) -> list[ApplicationModel]:
-        return self.db.query(ApplicationModel).filter_by(organisation_id=org_id).all()
+        return (
+            self.db.query(ApplicationModel)
+            .filter(ApplicationModel.organisation_id == org_id)
+            .all()
+        )
 
     def get_by_id(self, app_id: UUID) -> ApplicationModel | None:
         return self.db.query(ApplicationModel).filter_by(id=app_id).first()

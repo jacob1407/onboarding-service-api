@@ -8,10 +8,9 @@ from .routers.contacts_router import router as contacts_router
 from .routers.users_router import router as users_router
 from .routers.onboarding_router import router as onboarding_router
 from .routers.auth_router import router as auth_router
-from .routers.employees_router import router as employees_router
 
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi import Depends, FastAPI
+from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import HTTPException
 import logging
@@ -46,7 +45,6 @@ app.include_router(organisations_router, prefix="/organisations")
 app.include_router(applications_router, prefix="/applications")
 app.include_router(contacts_router, prefix="/contacts")
 app.include_router(users_router, prefix="/users")
-app.include_router(employees_router, prefix="/users/employees")
 app.include_router(onboarding_router, prefix="/onboarding")
 app.include_router(auth_router, prefix="/auth")
 

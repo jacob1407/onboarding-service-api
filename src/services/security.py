@@ -16,7 +16,7 @@ from ..schemas.auth import TokenData
 # Secret key and algorithm
 SECRET_KEY = "b6gGfbOkANbDfjchsMNJSBx5spYGhJO3ii63Yw09M-NLyuUTNaadx-Ba35engczQpwsp4GfzF_udnMoUBtuI3g"  # replace with environment variable later
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
+ACCESS_TOKEN_EXPIRE_MINUTES = 120
 
 # Password hashing context
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -83,5 +83,5 @@ def check_user_auth(
                 detail="Not authorized for this action",
             )
         return TokenData(user_id=user_id, organisation_id=organisation_id)
-    except JWTError:
-        raise HTTPException(status_code=401, detail="Invalid token")
+    except JWTError as e:
+        raise HTTPException(status_code=401, detail=e.__str__())

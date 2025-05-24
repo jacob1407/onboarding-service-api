@@ -1,3 +1,4 @@
+from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -23,7 +24,7 @@ def create_role(
     auth_data: TokenData = Depends(check_user_auth),
 ):
     service = RolesService(db)
-    return service.create_role(data, auth_data.organisation_id)
+    return service.create_role(data, UUID(auth_data.organisation_id))
 
 
 @router.get("/", response_model=list[GetRolesResponseModel])
@@ -37,7 +38,7 @@ def get_roles(
 
 @router.get("/{role_id}", response_model=GetRoleResponseModel)
 def get_role(
-    role_id: str,
+    role_id: UUID,
     db: Session = Depends(get_transactional_session),
     auth_data: TokenData = Depends(check_user_auth),
 ):
@@ -50,7 +51,7 @@ def get_role(
 
 @router.put("/{role_id}", response_model=GetRoleResponseModel)
 def update_role(
-    role_id: str,
+    role_id: UUID,
     data: CreateRoleRequestModel,
     db: Session = Depends(get_transactional_session),
     auth_data: TokenData = Depends(check_user_auth),

@@ -21,7 +21,7 @@ def create_application(
     auth_data: TokenData = Depends(check_user_auth),
 ):
     service = ApplicationService(db)
-    return service.create_application(data, auth_data.organisation_id)
+    return service.create_application(data, UUID(auth_data.organisation_id))
 
 
 @router.get("/", response_model=list[GetApplicationsResponseModel])
@@ -30,7 +30,7 @@ def get_applications(
     auth_data: TokenData = Depends(check_user_auth),
 ):
     service = ApplicationService(db)
-    return service.get_applications_by_org_id(auth_data.organisation_id)
+    return service.get_applications_by_org_id(UUID(auth_data.organisation_id))
 
 
 @router.get("/{application_id}", response_model=GetApplicationResponseModel)
@@ -40,7 +40,7 @@ def get_application(
     auth_data: TokenData = Depends(check_user_auth),
 ):
     service = ApplicationService(db)
-    app = service.get_application_by_id(application_id, auth_data.organisation_id)
+    app = service.get_application_by_id(application_id, UUID(auth_data.organisation_id))
     if not app:
         raise HTTPException(status_code=404, detail="Application not found")
     return app
@@ -55,7 +55,7 @@ def update_application(
 ):
     service = ApplicationService(db)
     updated = service.update_application(
-        application_id, data, auth_data.organisation_id
+        application_id, data, UUID(auth_data.organisation_id)
     )
     if not updated:
         raise HTTPException(status_code=404, detail="Application not found")
@@ -69,6 +69,8 @@ def delete_application(
     auth_data: TokenData = Depends(check_user_auth),
 ):
     service = ApplicationService(db)
-    deleted = service.delete_application(application_id, auth_data.organisation_id)
+    deleted = service.delete_application(
+        application_id, UUID(auth_data.organisation_id)
+    )
     if not deleted:
         raise HTTPException(status_code=404, detail="Application not found")

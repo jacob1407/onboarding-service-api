@@ -34,7 +34,7 @@ class ContactService:
         if not contact:
             return None
 
-        if str(contact.organisation_id) != organisation_id:
+        if str(contact.organisation_id) != str(organisation_id):
             raise HTTPException(
                 status_code=401, detail="User does not have access to view this contact"
             )
@@ -53,7 +53,7 @@ class ContactService:
         if not contact:
             raise HTTPException(status_code=404, detail="Contact not found")
 
-        if str(contact.organisation_id) != organisation_id:
+        if str(contact.organisation_id) != str(organisation_id):
             raise HTTPException(
                 status_code=401,
                 detail="User does not have access to update this contact",
@@ -64,7 +64,7 @@ class ContactService:
         contact = self.data_access.get_by_id(contact_id)
         if not contact:
             return False
-        if str(contact.organisation_id) != organisation_id:
+        if str(contact.organisation_id) != str(organisation_id):
             raise HTTPException(
                 status_code=401,
                 detail="User does not have access to delete this contact",

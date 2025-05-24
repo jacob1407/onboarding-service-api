@@ -29,7 +29,7 @@ async def start_onboarding(
     try:
         service = OnboardingService(db)
         onboarding_id = await service.start_onboarding(
-            user_id=request.user_id, org_id=auth_data.organisation_id
+            user_id=request.user_id, org_id=UUID(auth_data.organisation_id)
         )
         return {
             "message": "Onboarding started and emails sent",

@@ -7,24 +7,24 @@ from ..enums.user_type import UserType
 from ..models.onboarding_model import OnboardingModel
 from ..models.role_model import RoleModel
 from ..models.user_model import UserModel
-from ..schemas.user_schema import CreateUserRequestModel
+from ..schemas.user_schema import CreateUserRequestModel, UpdateUserRequestModel
 
 
 class UserDataAccess:
     def __init__(self, db: Session):
         self.db = db
 
-    def create_user(self, user: CreateUserRequestModel) -> UserModel:
+    def create_user(self, user: CreateUserRequestModel, org_id: UUID) -> UserModel:
         new_user = UserModel(
             first_name=user.first_name,
             last_name=user.last_name,
             email=user.email,
             username=user.username,
-            password=user.password,
+            password_hash="",
             type=user.type,
-            organisation_id=user.organisation_id,
+            organisation_id=org_id,
         )
-        self.db.add(user)
+        self.db.add(new_user)
         self.db.flush()
         return new_user
 
@@ -37,7 +37,7 @@ class UserDataAccess:
     def get_user_by_id(self, user_id: UUID) -> UserModel | None:
         return self.db.query(UserModel).filter(UserModel.id == user_id).first()
 
-    def update_user(self, user_id: UUID, data: CreateUserRequestModel) -> UserModel:
+    def update_user(self, user_id: UUID, data: UpdateUserRequestModel) -> UserModel:
         user = self.get_user_by_id(user_id)
 
         if not user:
@@ -50,7 +50,7 @@ class UserDataAccess:
         user.type = data.type
         return user
 
-    def get_all_employees(self) -> list[UserModel]:
+    def get_all_employees_by_org_id(self, org_id: UUID) -> list[UserModel]:
         return (
             self.db.query(UserModel)
             .join(OnboardingModel, OnboardingModel.user_id == UserModel.id)
@@ -60,7 +60,10 @@ class UserDataAccess:
                     OnboardingModel.role
                 )
             )
-            .filter(UserModel.type == UserType.employee)
+            .filter(
+                UserModel.type == UserType.employee
+                and UserModel.organisation_id == org_id
+            )
             .all()
         )
 

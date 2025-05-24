@@ -14,11 +14,16 @@ class CreateUserRequestModel(BaseModel):
     username: str
     type: UserType
     password: str
-    organisation_id: UUID
+    role_id: UUID
 
 
 class CreateEmployeeRequestModel(CreateUserRequestModel):
-    type: UserType = UserType.employee
+    first_name: str
+    last_name: str
+    email: str
+    username: str
+    type: UserType
+    password: str = ""
     role_id: UUID
 
 
@@ -30,7 +35,6 @@ class GetUserResponseModel(BaseModel):
     username: str
     status: UserStatus
     type: UserType
-    organisation_id: UUID
 
     model_config = {"from_attributes": True}
 
@@ -40,3 +44,12 @@ class GetEmployeeResponseModel(GetUserResponseModel):
     onboarding_status: EmployeeOnboardingStatus | None = None
 
     model_config = {"from_attributes": True}
+
+
+class UpdateUserRequestModel(BaseModel):
+    first_name: str
+    last_name: str
+    email: str
+    username: str
+    type: UserType
+    role_id: UUID

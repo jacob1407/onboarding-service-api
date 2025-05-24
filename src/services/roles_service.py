@@ -27,7 +27,9 @@ class RolesService:
             self.__role_application_service.associate_applications_to_role(
                 role.id, data.application_ids
             )
-        applications = self.__role_application_service.get_applications_by_role_id(role)
+        applications = self.__role_application_service.get_applications_by_role_id(
+            role.id
+        )
 
         return GetRoleResponseModel(
             id=role.id,

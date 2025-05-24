@@ -7,17 +7,63 @@ from sqlalchemy.orm import Session
 from ..enums.user_type import UserType
 
 from ..schemas.auth import Token, TokenData
-from ..services.security import create_access_token, verify_password
+from ..services.security import check_user_auth, create_access_token, verify_password
 from ..services.auth_service import AuthService
 
 from ..schemas.user_schema import (
+    CreateEmployeeRequestModel,
     CreateUserRequestModel,
+    GetEmployeeResponseModel,
     GetUserResponseModel,
+    UpdateUserRequestModel,
 )
 from ..services.users_service import UsersService
 from ..db.db import get_transactional_session
 
 router = APIRouter()
+
+
+@router.get("/employees", response_model=list[GetEmployeeResponseModel])
+def get_employees(
+    db: Session = Depends(get_transactional_session),
+    auth_data: TokenData = Depends(check_user_auth),
+):
+    service = UsersService(db)
+    return service.get_all_employees(UUID(auth_data.organisation_id))
+
+
+@router.post("/employees", response_model=GetEmployeeResponseModel)
+def create_employee(
+    data: CreateEmployeeRequestModel,
+    db: Session = Depends(get_transactional_session),
+    auth_data: TokenData = Depends(check_user_auth),
+):
+    service = UsersService(db)
+    return service.create_employee(data, UUID(auth_data.organisation_id))
+
+
+@router.get("/employees/{user_id}", response_model=GetEmployeeResponseModel)
+def get_employee(user_id: str, db: Session = Depends(get_transactional_session)):
+    service = UsersService(db)
+    employee = service.get_employee_by_id(UUID(user_id))
+    if not employee:
+        raise HTTPException(status_code=404, detail="Employee not found")
+    return employee
+
+
+@router.put("/employees/{user_id}", response_model=GetEmployeeResponseModel)
+def update_employee(
+    user_id: str,
+    data: UpdateUserRequestModel,
+    db: Session = Depends(get_transactional_session),
+):
+    service = UsersService(db)
+    updated = service.update_employee(UUID(user_id), data)
+    if not updated:
+        raise HTTPException(
+            status_code=404, detail="Employee not found or not updatable."
+        )
+    return updated
 
 
 @router.post("/", response_model=GetUserResponseModel)
@@ -48,7 +94,7 @@ def get_user(user_id: UUID, db: Session = Depends(get_transactional_session)):
 @router.put("/{user_id}", response_model=GetUserResponseModel)
 def update_user(
     user_id: UUID,
-    data: CreateUserRequestModel,
+    data: UpdateUserRequestModel,
     db: Session = Depends(get_transactional_session),
 ):
     service = UsersService(db)

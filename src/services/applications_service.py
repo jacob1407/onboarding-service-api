@@ -53,7 +53,7 @@ class ApplicationService:
         if not application:
             return None
 
-        if str(application.organisation_id) != auth_organisation_id:
+        if str(application.organisation_id) != str(auth_organisation_id):
             raise HTTPException(
                 status_code=401,
                 detail="User does not have access to view this application",
@@ -86,14 +86,24 @@ class ApplicationService:
         if not application:
             return None
 
-        if str(application.organisation_id) != auth_organisation_id:
+        if str(application.organisation_id) != str(auth_organisation_id):
             raise HTTPException(
                 status_code=401,
                 detail="User does not have access to update this application",
             )
 
         updated_application = self.data_access.update(application_id, data)
-        return GetApplicationResponseModel.model_validate(updated_application)
+        self.application_contacts_data_access.update_application_contacts(
+            application_id, data.contact_ids
+        )
+        contacts = self.contact_service.get_contacts_by_ids(data.contact_ids or [])
+        return GetApplicationResponseModel(
+            id=updated_application.id,
+            name=updated_application.name,
+            code=updated_application.code,
+            description=updated_application.description,
+            contacts=contacts,
+        )
 
     def delete_application(self, application_id: UUID, org_id: UUID) -> bool:
         application = self.data_access.get_by_id(application_id)

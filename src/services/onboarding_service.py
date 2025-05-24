@@ -59,7 +59,7 @@ class OnboardingService:
         if not employee or not onboarding:
             raise ValueError("User or onboarding record not found")
 
-        if employee.organisation_id != org_id:
+        if str(employee.organisation_id) != str(org_id):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="User does not have access to this onboarding process",

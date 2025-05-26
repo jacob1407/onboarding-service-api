@@ -1,8 +1,6 @@
 from uuid import UUID
 from pydantic import BaseModel
 
-from ..schemas.roles_schema import GetRolesResponseModel
-from ..enums.employee_onboarding_status import EmployeeOnboardingStatus
 from ..enums.user_status import UserStatus
 from ..enums.user_type import UserType
 
@@ -34,13 +32,6 @@ class GetUserResponseModel(BaseModel):
     username: str
     status: UserStatus
     type: UserType
-
-    model_config = {"from_attributes": True}
-
-
-class GetEmployeeResponseModel(GetUserResponseModel):
-    role: GetRolesResponseModel
-    onboarding_status: EmployeeOnboardingStatus | None = None
 
     model_config = {"from_attributes": True}
 

@@ -2,6 +2,8 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
+from ..schemas.employee_schema import GetEmployeeResponseModel
+
 from ..services.security import check_user_auth
 
 from ..schemas.auth import TokenData
@@ -10,7 +12,6 @@ from ..services.users_service import UsersService
 from ..db.db import get_transactional_session
 from ..schemas.user_schema import (
     CreateEmployeeRequestModel,
-    GetEmployeeResponseModel,
     UpdateUserRequestModel,
 )
 
@@ -38,9 +39,15 @@ def create_employee(
 
 
 @router.get("/{user_id}", response_model=GetEmployeeResponseModel)
-def get_employee(user_id: str, db: Session = Depends(get_transactional_session)):
+def get_employee(
+    user_id: str,
+    db: Session = Depends(get_transactional_session),
+    auth_data: TokenData = Depends(check_user_auth),
+):
     service = UsersService(db)
-    employee = service.get_employee_by_id(UUID(user_id))
+    employee = service.get_employee_by_id(
+        UUID(user_id), UUID(auth_data.organisation_id)
+    )
     if not employee:
         raise HTTPException(status_code=404, detail="Employee not found")
     return employee
@@ -51,9 +58,12 @@ def update_employee(
     user_id: str,
     data: UpdateUserRequestModel,
     db: Session = Depends(get_transactional_session),
+    auth_data: TokenData = Depends(check_user_auth),
 ):
     service = UsersService(db)
-    updated = service.update_employee(UUID(user_id), data)
+    updated = service.update_employee(
+        UUID(user_id), data, UUID(auth_data.organisation_id)
+    )
     if not updated:
         raise HTTPException(
             status_code=404, detail="Employee not found or not updatable."

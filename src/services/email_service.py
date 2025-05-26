@@ -5,7 +5,6 @@ from sendgrid.helpers.mail import Mail, Email, To, Content
 from ..schemas.user_schema import GetUserResponseModel
 
 from ..models.user_model import UserModel
-from ..models.contact_model import ContactModel
 from ..models.application_model import ApplicationModel
 
 SENDGRID_API_KEY = (
@@ -21,7 +20,7 @@ class EmailService:
 
     async def send_application_request_email(
         self,
-        contact: ContactModel,
+        contact: UserModel,
         employee: UserModel,
         application: ApplicationModel,
         request_id: UUID,

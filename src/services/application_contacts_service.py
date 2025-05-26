@@ -1,7 +1,8 @@
 from sqlalchemy.orm import Session
 from uuid import UUID
 
-from ..schemas.contact_schema import GetContactResponseModel
+from ..schemas.user_schema import GetUserResponseModel
+
 from ..data_access.application_contacts_data_access import ApplicationContactDataAccess
 
 
@@ -17,9 +18,9 @@ class ApplicationContactsService:
 
     def get_contacts_by_application_id(
         self, application_id: UUID
-    ) -> list[GetContactResponseModel]:
+    ) -> list[GetUserResponseModel]:
         contacts = self.dao.get_all_contacts_by_application_id(application_id)
-        return [GetContactResponseModel.model_validate(contact) for contact in contacts]
+        return [GetUserResponseModel.model_validate(contact) for contact in contacts]
 
     def update_application_contacts(
         self, application_id: UUID, contact_ids: list[UUID]

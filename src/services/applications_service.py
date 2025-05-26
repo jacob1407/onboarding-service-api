@@ -1,8 +1,7 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
 
-from ..services.contacts_service import ContactService
-
+from ..services.users_service import UsersService
 from ..services.application_contacts_service import ApplicationContactsService
 from ..schemas.applications_schema import (
     CreateApplicationRequestModel,
@@ -18,8 +17,8 @@ from uuid import UUID
 class ApplicationService:
     def __init__(self, db: Session):
         self.data_access = ApplicationDataAccess(db)
+        self.users_service = UsersService(db)
         self.application_contacts_service = ApplicationContactsService(db)
-        self.contact_service = ContactService(db)
         self.application_contacts_data_access = ApplicationContactDataAccess(db)
         self.role_applications_data_access = RoleApplicationDataAccess(db)
 
@@ -31,7 +30,7 @@ class ApplicationService:
             self.application_contacts_service.associate_contacts_to_application(
                 app.id, data.contact_ids
             )
-        contacts = self.contact_service.get_contacts_by_ids(data.contact_ids or [])
+        contacts = self.users_service.get_users_by_ids(data.contact_ids or [])
         return GetApplicationResponseModel(
             id=app.id,
             name=app.name,
@@ -58,6 +57,7 @@ class ApplicationService:
                 status_code=401,
                 detail="User does not have access to view this application",
             )
+
         contacts = self.application_contacts_service.get_contacts_by_application_id(
             application.id
         )
@@ -96,7 +96,7 @@ class ApplicationService:
         self.application_contacts_data_access.update_application_contacts(
             application_id, data.contact_ids
         )
-        contacts = self.contact_service.get_contacts_by_ids(data.contact_ids or [])
+        contacts = self.users_service.get_users_by_ids(data.contact_ids or [])
         return GetApplicationResponseModel(
             id=updated_application.id,
             name=updated_application.name,

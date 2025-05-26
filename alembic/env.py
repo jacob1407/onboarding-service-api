@@ -24,6 +24,7 @@ from src.models import (
     user_model,
     onboarding_model,
     onboarding_requests_model,
+    application_contact_model,
 )  # import models to reflect schema
 
 # Alembic config

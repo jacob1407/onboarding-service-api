@@ -2,7 +2,7 @@ from pydantic import BaseModel, computed_field
 from uuid import UUID
 from typing import Optional
 
-from ..schemas.contact_schema import GetContactResponseModel
+from ..schemas.user_schema import GetUserResponseModel
 
 
 class CreateApplicationRequestModel(BaseModel):
@@ -21,7 +21,7 @@ class GetApplicationResponseModel(BaseModel):
     name: str
     code: str
     description: Optional[str] = None
-    contacts: list[GetContactResponseModel]
+    contacts: list[GetUserResponseModel]
 
     model_config = {"from_attributes": True}
 

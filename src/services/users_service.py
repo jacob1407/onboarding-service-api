@@ -4,23 +4,21 @@ from fastapi import HTTPException
 from jose import JWTError
 from sqlalchemy.orm import Session
 
+from ..data_access.role_data_access import RoleDataAccess
+from ..schemas.roles_schema import GetRolesResponseModel
+
+from ..schemas.employee_schema import GetEmployeeResponseModel
 from ..enums.user_status import UserStatus
-from ..schemas.auth import CompleteInviteRequest, InviteInfoResponse, TokenData
-
+from ..schemas.auth import CompleteInviteRequest, InviteInfoResponse
 from ..services.security import create_access_token, decode_access_token, hash_password
-
 from ..models.user_model import UserModel
-
 from ..data_access.onboarding_data_access import EmployeeOnboardingDataAccess
-from ..services.roles_service import RolesService
 from ..data_access.user_data_access import UserDataAccess
-
 from ..enums.user_type import UserType
 
 from ..schemas.user_schema import (
     CreateEmployeeRequestModel,
     CreateUserRequestModel,
-    GetEmployeeResponseModel,
     GetUserResponseModel,
     UpdateUserRequestModel,
 )
@@ -29,7 +27,7 @@ from ..schemas.user_schema import (
 class UsersService:
     def __init__(self, db: Session):
         self.__data_access = UserDataAccess(db)
-        self.__roles_service = RolesService(db)
+        self.__roles_service = RoleDataAccess(db)
         self.__onboarding_data_access = EmployeeOnboardingDataAccess(db)
 
     def create_user(
@@ -71,6 +69,10 @@ class UsersService:
             )
         return user if user else None
 
+    def get_users_by_ids(self, user_ids: list[UUID]) -> list[GetUserResponseModel]:
+        users = self.__data_access.get_users_by_user_ids(user_ids)
+        return [GetUserResponseModel.model_validate(u) for u in users]
+
     def get_user_by_username(self, username: str) -> UserModel | None:
         return self.__data_access.get_user_by_username(username)
 
@@ -101,6 +103,8 @@ class UsersService:
             user_id=user.id, role_id=data.role_id
         )
         role = self.__roles_service.get_role_by_id(data.role_id)
+        if not role:
+            raise HTTPException(status_code=404, detail="User role not found")
 
         return GetEmployeeResponseModel(
             id=user.id,
@@ -110,7 +114,7 @@ class UsersService:
             username=user.username,
             status=user.status,
             type=user.type,
-            role=role,
+            role=GetRolesResponseModel.model_validate(role),
         )
 
     def get_employee_by_id(
@@ -129,6 +133,8 @@ class UsersService:
         if not onboarding:
             return None
         role = self.__roles_service.get_role_by_id(onboarding.role_id)
+        if not role:
+            raise HTTPException(status_code=404, detail="User role not found")
 
         return GetEmployeeResponseModel(
             id=user.id,
@@ -138,7 +144,7 @@ class UsersService:
             username=user.username,
             status=user.status,
             type=user.type,
-            role=role,
+            role=GetRolesResponseModel.model_validate(role),
             onboarding_status=onboarding.status if onboarding else None,
         )
 
@@ -173,11 +179,13 @@ class UsersService:
         )
 
         role = self.__roles_service.get_role_by_id(data.role_id)
+        if not role:
+            raise HTTPException(status_code=404, detail="User role not found")
 
         return GetEmployeeResponseModel.model_validate(
             {
                 **updated_user.__dict__,
-                "role": role,
+                "role": GetRolesResponseModel.model_validate(role),
                 "onboarding_status": updated_onboarding.status,
             }
         )

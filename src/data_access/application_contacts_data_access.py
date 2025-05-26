@@ -1,7 +1,8 @@
 from sqlalchemy.orm import Session
 from uuid import UUID
 
-from ..models.contact_model import ContactModel
+from ..models.user_model import UserModel
+
 from ..models.application_contact_model import ApplicationContactsModel
 
 
@@ -29,12 +30,12 @@ class ApplicationContactDataAccess:
 
     def get_all_contacts_by_application_id(
         self, application_id: UUID
-    ) -> list[ContactModel]:
+    ) -> list[UserModel]:
         return (
-            self.db.query(ContactModel)
+            self.db.query(UserModel)
             .join(
                 ApplicationContactsModel,
-                ApplicationContactsModel.contact_id == ContactModel.id,
+                ApplicationContactsModel.contact_id == UserModel.id,
             )
             .filter(ApplicationContactsModel.application_id == application_id)
             .all()

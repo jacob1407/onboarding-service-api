@@ -15,6 +15,6 @@ class ApplicationContactsModel(Base):
     )
 
     contact_id: Mapped[PyUUID] = mapped_column(
-        ForeignKey("contacts.id"),
+        ForeignKey("users.id"),
         primary_key=True,
     )

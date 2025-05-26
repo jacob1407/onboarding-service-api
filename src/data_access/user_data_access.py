@@ -39,6 +39,9 @@ class UserDataAccess:
     def get_user_by_id(self, user_id: UUID) -> UserModel | None:
         return self.db.query(UserModel).filter(UserModel.id == user_id).first()
 
+    def get_users_by_user_ids(self, user_ids: list[UUID]) -> list[UserModel]:
+        return self.db.query(UserModel).filter(UserModel.id.in_(user_ids)).all()
+
     def update_user(self, user_id: UUID, data: UpdateUserRequestModel) -> UserModel:
         user = self.get_user_by_id(user_id)
 

@@ -2,6 +2,8 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
+from ..schemas.employee_schema import GetEmployeeResponseModel
+
 
 from ..services.email_service import EmailService
 from ..enums.user_type import UserType
@@ -14,7 +16,6 @@ from ..services.security import (
 from ..schemas.user_schema import (
     CreateEmployeeRequestModel,
     CreateUserRequestModel,
-    GetEmployeeResponseModel,
     GetUserResponseModel,
     UpdateUserRequestModel,
 )

@@ -44,7 +44,7 @@ class OnboardingRequestModel(Base):
     )
 
     acknowledged_by: Mapped[PyUUID | None] = mapped_column(
-        ForeignKey("contacts.id"),
+        ForeignKey("users.id"),
         nullable=True,
     )
 

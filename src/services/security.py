@@ -85,3 +85,14 @@ def check_user_auth(
         return TokenData(user_id=user_id, organisation_id=organisation_id)
     except JWTError as e:
         raise HTTPException(status_code=401, detail=e.__str__())
+
+
+def create_invite_token(user_id: str, org_id: str, expires_minutes: int = 60 * 24):
+    expire = datetime.now(timezone.utc) + timedelta(minutes=expires_minutes)
+    payload = {
+        "user_id": user_id,
+        "org_id": org_id,
+        "purpose": "invite",
+        "exp": expire,
+    }
+    return jwt.encode(payload, SECRET_KEY, algorithm="HS256")

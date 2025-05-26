@@ -28,10 +28,12 @@ class UserDataAccess:
         self.db.flush()
         return new_user
 
-    def get_all_users(self, user_type: UserType | None = None) -> list[UserModel]:
+    def get_all_users(self, user_type: UserType, org_id: UUID) -> list[UserModel]:
         query = self.db.query(UserModel)
         if user_type:
-            query = query.filter(UserModel.type == user_type)
+            query = query.filter(
+                UserModel.type == user_type and UserModel.organisation_id == org_id
+            )
         return query.all()
 
     def get_user_by_id(self, user_id: UUID) -> UserModel | None:

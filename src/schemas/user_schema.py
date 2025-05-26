@@ -14,7 +14,6 @@ class CreateUserRequestModel(BaseModel):
     username: str
     type: UserType
     password: str
-    role_id: UUID
 
 
 class CreateEmployeeRequestModel(CreateUserRequestModel):
@@ -53,3 +52,11 @@ class UpdateUserRequestModel(BaseModel):
     username: str
     type: UserType
     role_id: UUID
+
+
+class InviteUserRequest(BaseModel):
+    email: str
+    first_name: str
+    last_name: str
+    username: str
+    user_type: UserType

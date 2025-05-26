@@ -2,6 +2,8 @@ from uuid import UUID
 import httpx
 from sendgrid.helpers.mail import Mail, Email, To, Content
 
+from ..schemas.user_schema import GetUserResponseModel
+
 from ..models.user_model import UserModel
 from ..models.contact_model import ContactModel
 from ..models.application_model import ApplicationModel
@@ -45,6 +47,30 @@ class EmailService:
         """
 
         await self._send_email(to=contact.email, subject=subject, html_body=body)
+
+    async def send_invite_email(self, user: GetUserResponseModel, token: str):
+        invite_link = f"http://localhost:3000/complete-invite?token={token}"
+
+        subject = "You're invited to join Access Manager"
+        html_body = f"""
+        <p>Hi {user.first_name},</p>
+
+        <p>You’ve been invited to join Access Manager.</p>
+        <p>
+            <a href="{invite_link}" style="padding: 10px 16px; background-color: #2563eb; color: white;
+                    text-decoration: none; border-radius: 4px; font-weight: bold;">
+                Accept Invitation
+            </a>
+        </p>
+        <p>This link will expire in 24 hours.</p>
+        <p>Thanks,<br/>Onboarding Team</p>
+        """
+
+        await self._send_email(
+            to=user.email,
+            subject=subject,
+            html_body=html_body,
+        )
 
     async def _send_email(self, to: str, subject: str, html_body: str):
         # Build the message using SendGrid helpers

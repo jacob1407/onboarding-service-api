@@ -19,7 +19,6 @@ class CreateApplicationRequestModel(BaseModel):
 class GetApplicationResponseModel(BaseModel):
     id: UUID
     name: str
-    code: str
     description: Optional[str] = None
     contacts: list[GetUserResponseModel]
 
@@ -29,7 +28,6 @@ class GetApplicationResponseModel(BaseModel):
 class GetApplicationsResponseModel(BaseModel):
     id: UUID
     name: str
-    code: str
-    description: Optional[str] = None
+    description: str | None = None
 
     model_config = {"from_attributes": True}

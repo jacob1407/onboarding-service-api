@@ -1,6 +1,7 @@
-from uuid import UUID
 import httpx
 from sendgrid.helpers.mail import Mail, Email, To, Content
+
+from ..enums.user_status import UserStatus
 
 from ..schemas.user_schema import GetUserResponseModel
 
@@ -23,26 +24,31 @@ class EmailService:
         contact: UserModel,
         employee: UserModel,
         application: ApplicationModel,
-        request_id: UUID,
     ):
         subject = (
             f"{employee.first_name} {employee.last_name} needs access to applications"
         )
 
         body = f"""
-        <p>Dear {contact.first_name},</p>
+        <div style="background-color: #f9f9f9; padding: 20px; font-family: Arial, sans-serif;">
+            <div style="max-width: 600px; margin: auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                <div style="padding: 20px; border-bottom: 1px solid #eaeaea;">
+                    <h2 style="color: #2563eb;">Access Request for Applications</h2>
+                </div>
+                <div style="padding: 20px;">
+                    <p style="color: #333333;">Dear {contact.first_name},</p>
 
-        <p>{employee.first_name} {employee.last_name} has started onboarding and needs access to <strong>{application.name}</strong>.</p>
-        <p>
-            <a href="http://localhost:8080/onboarding/requests/{request_id}/confirm"
-                style="display: inline-block; padding: 10px 16px; background-color: #2563eb; color: white;
-                        text-decoration: none; border-radius: 4px; font-weight: bold;">
-                Confirm Access Granted
-            </a>
-        </p>
-
-        <p>Thanks,</p>
-        <p>Onboarding Team</p>
+                    <p style="color: #333333;">{employee.first_name} {employee.last_name} has started onboarding and needs access to <strong>{application.name}</strong>.</p>
+                    <p>
+                        Please log in to Access Manager to review and approve the request.
+                    </p>
+                    {" " if contact.status == UserStatus.active else "<p style='color: #333333;'>If you haven't activated your account, please do so by following the complete-invitation email sent previously.</p>"}
+                </div>
+                <div style="padding: 20px; border-top: 1px solid #eaeaea; text-align: center;">
+                    <p style="color: #999999; font-size: 12px;">Thanks,<br/>Onboarding Team</p>
+                </div>
+            </div>
+        </div>
         """
 
         await self._send_email(to=contact.email, subject=subject, html_body=body)
@@ -52,17 +58,25 @@ class EmailService:
 
         subject = "You're invited to join Access Manager"
         html_body = f"""
-        <p>Hi {user.first_name},</p>
+        <div style="background-color: #f9f9f9; padding: 20px; font-family: Arial, sans-serif;">
+            <div style="max-width: 600px; margin: auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                <div style="padding: 20px; border-bottom: 1px solid #eaeaea;">
+                    <h2 style="color: #2563eb;">You're invited to join Access Manager</h2>
+                </div>
+                <div style="padding: 20px;">
+                    <p style="color: #333333;">Hi {user.first_name},</p>
 
-        <p>You’ve been invited to join Access Manager.</p>
-        <p>
-            <a href="{invite_link}" style="padding: 10px 16px; background-color: #2563eb; color: white;
-                    text-decoration: none; border-radius: 4px; font-weight: bold;">
-                Accept Invitation
-            </a>
-        </p>
-        <p>This link will expire in 24 hours.</p>
-        <p>Thanks,<br/>Onboarding Team</p>
+                    <p style="color: #333333;">You’ve been invited to join Access Manager. Use the following link to activate your account.</p>
+                    <p>
+                        {invite_link}
+                    </p>
+                    <p style="color: #333333;">This link will expire in 24 hours.</p>
+                </div>
+                <div style="padding: 20px; border-top: 1px solid #eaeaea; text-align: center;">
+                    <p style="color: #999999; font-size: 12px;">Thanks,<br/>Onboarding Team</p>
+                </div>
+            </div>
+        </div>
         """
 
         await self._send_email(

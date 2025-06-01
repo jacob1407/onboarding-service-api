@@ -49,7 +49,9 @@ def confirm_onboarding_request(
     auth_data: TokenData = Depends(check_access_manager_user_auth),
 ):
     service = OnboardingRequestsService(db)
-    updated = service.confirm_onboarding_request_complete(request_id)
+    updated = service.confirm_onboarding_request_complete(
+        request_id, UUID(auth_data.user_id)
+    )
     if not updated:
         raise HTTPException(status_code=404, detail="Request not found")
     return {

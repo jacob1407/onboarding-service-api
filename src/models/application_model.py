@@ -25,7 +25,6 @@ class ApplicationModel(Base):
 
     name: Mapped[str] = mapped_column(String, nullable=False)
     description: Mapped[str | None] = mapped_column(String, nullable=True)
-    code: Mapped[str] = mapped_column(String, nullable=False)
 
     organisation_id: Mapped[PyUUID] = mapped_column(
         ForeignKey("organisations.id"),

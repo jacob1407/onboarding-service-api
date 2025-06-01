@@ -29,13 +29,11 @@ class UserDataAccess:
         return new_user
 
     def get_all_users_by_user_types(
-        self, user_types: list[UserType], org_id: UUID
+        self, user_types: list[UserType] | None, org_id: UUID
     ) -> list[UserModel]:
-        query = self.db.query(UserModel)
+        query = self.db.query(UserModel).filter(UserModel.organisation_id == org_id)
         if user_types:
-            query = query.filter(
-                UserModel.type.in_(user_types), UserModel.organisation_id == org_id
-            )
+            query = query.filter(UserModel.type.in_(user_types))
         return query.all()
 
     def get_user_by_id(self, user_id: UUID) -> UserModel | None:

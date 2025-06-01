@@ -77,6 +77,7 @@ def check_admin_user_auth(
             raise HTTPException(status_code=401, detail="User not found")
         if user.type not in [
             UserType.admin,
+            UserType.access_manager,
         ]:
             raise HTTPException(
                 status_code=HTTPStatus.FORBIDDEN,

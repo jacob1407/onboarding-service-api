@@ -119,7 +119,7 @@ class OnboardingService:
         """Send onboarding emails asynchronously."""
         requests = [
             self.email_service.send_application_request_email(
-                contact, employee, info["application"], info["request_id"]
+                contact, employee, info["application"]
             )
             for info in request_email_information
             for contact in info["contacts"]

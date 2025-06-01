@@ -89,7 +89,7 @@ def create_user(
 
 @router.get("/", response_model=list[GetUserResponseModel])
 def get_users(
-    user_types: list[UserType] = Query(...),
+    user_types: list[UserType] | None = Query(default=None),
     db: Session = Depends(get_transactional_session),
     auth_data: TokenData = Depends(check_admin_user_auth),
 ):

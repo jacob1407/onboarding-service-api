@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session, joinedload
 from uuid import UUID
+from datetime import datetime, timezone
 
 from ..models.onboarding_model import OnboardingModel
 from ..models.onboarding_requests_model import OnboardingRequestModel
@@ -22,8 +23,11 @@ class EmployeeOnboardingRequestDataAccess:
         self.db.flush()
         return request.id
 
-    def update_request_status(
-        self, request_id: UUID, status: EmployeeOnboardingRequestStatus
+    def mark_request_as_completed(
+        self,
+        request_id: UUID,
+        status: EmployeeOnboardingRequestStatus,
+        updated_by: UUID,
     ) -> OnboardingRequestModel | None:
         request = (
             self.db.query(OnboardingRequestModel)
@@ -32,6 +36,8 @@ class EmployeeOnboardingRequestDataAccess:
         )
 
         if request:
+            request.acknowledged_by = updated_by
+            request.acknowledged_at = datetime.now(timezone.utc)
             request.status = status
             return request
 
@@ -74,6 +80,9 @@ class EmployeeOnboardingRequestDataAccess:
                 joinedload(OnboardingRequestModel.application),
                 joinedload(OnboardingRequestModel.onboarding).joinedload(
                     OnboardingModel.user
+                ),
+                joinedload(OnboardingRequestModel.onboarding).joinedload(
+                    OnboardingModel.role
                 ),
             )
             .all()

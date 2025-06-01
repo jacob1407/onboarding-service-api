@@ -28,7 +28,7 @@ class OnboardingRequestsService:
         self.app_contacts_data_access = ApplicationContactDataAccess(db)
 
     def confirm_onboarding_request_complete(
-        self, request_id: UUID
+        self, request_id: UUID, contact_id: UUID
     ) -> OnboardingRequestModel | None:
         # Step 1: Get the request
         request = self.data_access.get_request_by_id(request_id)
@@ -38,8 +38,8 @@ class OnboardingRequestsService:
         if request.status == EmployeeOnboardingRequestStatus.complete:
             return request
 
-        self.data_access.update_request_status(
-            request_id, EmployeeOnboardingRequestStatus.complete
+        self.data_access.mark_request_as_completed(
+            request_id, EmployeeOnboardingRequestStatus.complete, contact_id
         )
 
         all_requests = self.data_access.get_requests_by_onboarding_id(

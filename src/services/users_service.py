@@ -44,7 +44,7 @@ class UsersService:
         return GetUserResponseModel.model_validate(user)
 
     def get_all_users(
-        self, user_types: list[UserType], org_id: UUID
+        self, user_types: list[UserType] | None, org_id: UUID
     ) -> list[GetUserResponseModel]:
         users = self.__data_access.get_all_users_by_user_types(user_types, org_id)
         return [GetUserResponseModel.model_validate(u) for u in users]

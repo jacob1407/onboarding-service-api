@@ -8,7 +8,7 @@ from ..schemas.applications_schema import (
 )
 from ..schemas.auth import TokenData
 from ..services.applications_service import ApplicationService
-from ..services.security import check_user_auth
+from ..services.security import check_admin_user_auth
 from ..db.db import get_transactional_session
 
 router = APIRouter()
@@ -18,7 +18,7 @@ router = APIRouter()
 def create_application(
     data: CreateApplicationRequestModel,
     db: Session = Depends(get_transactional_session),
-    auth_data: TokenData = Depends(check_user_auth),
+    auth_data: TokenData = Depends(check_admin_user_auth),
 ):
     service = ApplicationService(db)
     return service.create_application(data, UUID(auth_data.organisation_id))
@@ -27,7 +27,7 @@ def create_application(
 @router.get("/", response_model=list[GetApplicationsResponseModel])
 def get_applications(
     db: Session = Depends(get_transactional_session),
-    auth_data: TokenData = Depends(check_user_auth),
+    auth_data: TokenData = Depends(check_admin_user_auth),
 ):
     service = ApplicationService(db)
     return service.get_applications_by_org_id(UUID(auth_data.organisation_id))
@@ -37,7 +37,7 @@ def get_applications(
 def get_application(
     application_id: UUID,
     db: Session = Depends(get_transactional_session),
-    auth_data: TokenData = Depends(check_user_auth),
+    auth_data: TokenData = Depends(check_admin_user_auth),
 ):
     service = ApplicationService(db)
     app = service.get_application_by_id(application_id, UUID(auth_data.organisation_id))
@@ -51,7 +51,7 @@ def update_application(
     application_id: UUID,
     data: CreateApplicationRequestModel,
     db: Session = Depends(get_transactional_session),
-    auth_data: TokenData = Depends(check_user_auth),
+    auth_data: TokenData = Depends(check_admin_user_auth),
 ):
     service = ApplicationService(db)
     updated = service.update_application(
@@ -66,7 +66,7 @@ def update_application(
 def delete_application(
     application_id: UUID,
     db: Session = Depends(get_transactional_session),
-    auth_data: TokenData = Depends(check_user_auth),
+    auth_data: TokenData = Depends(check_admin_user_auth),
 ):
     service = ApplicationService(db)
     deleted = service.delete_application(

@@ -20,7 +20,7 @@ from ..schemas.auth import (
     TokenData,
 )
 from ..services.security import (
-    check_user_auth,
+    check_admin_user_auth,
     create_access_token,
     create_invite_token,
     verify_password,
@@ -45,7 +45,18 @@ def login(
     token = create_access_token(
         TokenData(user_id=str(user.id), organisation_id=str(user.organisation_id))
     )
-    return {"access_token": token}
+
+    return {
+        "access_token": token,
+        "user": {
+            "id": str(user.id),
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "email": user.email,
+            "username": user.username,
+            "type": user.type.value,
+        },
+    }
 
 
 @router.post("/register", response_model=Token)
@@ -73,7 +84,7 @@ def register(
 async def invite_user(
     payload: InviteUserRequest,
     db: Session = Depends(get_transactional_session),
-    auth_data: TokenData = Depends(check_user_auth),
+    auth_data: TokenData = Depends(check_admin_user_auth),
 ):
     user_service = UsersService(db)
     email_service = EmailService()

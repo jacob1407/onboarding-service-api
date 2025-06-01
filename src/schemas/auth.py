@@ -7,6 +7,9 @@ from ..enums.user_type import UserType
 class Token(BaseModel):
     access_token: str
     token_type: str = "bearer"
+    user: dict[
+        str, str
+    ]  # Contains user details like id, first_name, last_name, email, username, type
 
 
 class TokenData(BaseModel):

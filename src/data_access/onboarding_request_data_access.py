@@ -33,7 +33,7 @@ class EmployeeOnboardingRequestDataAccess:
 
         if request:
             request.status = status
-            return request.id
+            return request
 
         return None
 
@@ -58,5 +58,23 @@ class EmployeeOnboardingRequestDataAccess:
         return (
             self.db.query(OnboardingRequestModel)
             .filter_by(onboarding_id=onboarding_id)
+            .all()
+        )
+
+    def get_requests_by_application_ids(
+        self, app_ids: list[UUID], status: EmployeeOnboardingRequestStatus
+    ):
+        return (
+            self.db.query(OnboardingRequestModel)
+            .filter(
+                OnboardingRequestModel.application_id.in_(app_ids),
+                OnboardingRequestModel.status == status,
+            )
+            .options(
+                joinedload(OnboardingRequestModel.application),
+                joinedload(OnboardingRequestModel.onboarding).joinedload(
+                    OnboardingModel.user
+                ),
+            )
             .all()
         )

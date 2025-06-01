@@ -65,3 +65,11 @@ class ApplicationContactDataAccess:
         self.db.query(ApplicationContactsModel).filter(
             ApplicationContactsModel.application_id == application_id
         ).delete()
+
+    def get_apps_by_contact_id(self, contact_id: UUID) -> list[UUID]:
+        return [
+            row.application_id
+            for row in self.db.query(ApplicationContactsModel)
+            .filter(ApplicationContactsModel.contact_id == contact_id)
+            .all()
+        ]

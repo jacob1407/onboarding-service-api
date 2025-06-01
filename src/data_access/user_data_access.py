@@ -28,11 +28,13 @@ class UserDataAccess:
         self.db.flush()
         return new_user
 
-    def get_all_users(self, user_type: UserType, org_id: UUID) -> list[UserModel]:
+    def get_all_users_by_user_types(
+        self, user_types: list[UserType], org_id: UUID
+    ) -> list[UserModel]:
         query = self.db.query(UserModel)
-        if user_type:
+        if user_types:
             query = query.filter(
-                UserModel.type == user_type and UserModel.organisation_id == org_id
+                UserModel.type.in_(user_types), UserModel.organisation_id == org_id
             )
         return query.all()
 

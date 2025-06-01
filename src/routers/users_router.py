@@ -1,5 +1,5 @@
 from uuid import UUID
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from ..schemas.employee_schema import GetEmployeeResponseModel
@@ -11,7 +11,7 @@ from ..schemas.auth import (
     TokenData,
 )
 from ..services.security import (
-    check_user_auth,
+    check_admin_user_auth,
 )
 from ..schemas.user_schema import (
     CreateEmployeeRequestModel,
@@ -28,7 +28,7 @@ router = APIRouter()
 @router.get("/employees", response_model=list[GetEmployeeResponseModel])
 def get_employees(
     db: Session = Depends(get_transactional_session),
-    auth_data: TokenData = Depends(check_user_auth),
+    auth_data: TokenData = Depends(check_admin_user_auth),
 ):
     service = UsersService(db)
     return service.get_all_employees(UUID(auth_data.organisation_id))
@@ -38,7 +38,7 @@ def get_employees(
 def create_employee(
     data: CreateEmployeeRequestModel,
     db: Session = Depends(get_transactional_session),
-    auth_data: TokenData = Depends(check_user_auth),
+    auth_data: TokenData = Depends(check_admin_user_auth),
 ):
     service = UsersService(db)
     return service.create_employee(data, UUID(auth_data.organisation_id))
@@ -48,7 +48,7 @@ def create_employee(
 def get_employee(
     user_id: str,
     db: Session = Depends(get_transactional_session),
-    auth_data: TokenData = Depends(check_user_auth),
+    auth_data: TokenData = Depends(check_admin_user_auth),
 ):
     service = UsersService(db)
     employee = service.get_employee_by_id(
@@ -64,7 +64,7 @@ def update_employee(
     user_id: str,
     data: UpdateUserRequestModel,
     db: Session = Depends(get_transactional_session),
-    auth_data: TokenData = Depends(check_user_auth),
+    auth_data: TokenData = Depends(check_admin_user_auth),
 ):
     service = UsersService(db)
     updated = service.update_employee(
@@ -81,7 +81,7 @@ def update_employee(
 def create_user(
     data: CreateUserRequestModel,
     db: Session = Depends(get_transactional_session),
-    auth_data: TokenData = Depends(check_user_auth),
+    auth_data: TokenData = Depends(check_admin_user_auth),
 ):
     service = UsersService(db)
     return service.create_user(data, UUID(auth_data.organisation_id))
@@ -89,13 +89,13 @@ def create_user(
 
 @router.get("/", response_model=list[GetUserResponseModel])
 def get_users(
-    user_type: UserType,
+    user_types: list[UserType] = Query(...),
     db: Session = Depends(get_transactional_session),
-    auth_data: TokenData = Depends(check_user_auth),
+    auth_data: TokenData = Depends(check_admin_user_auth),
 ):
     service = UsersService(db)
     return service.get_all_users(
-        user_type=user_type, org_id=UUID(auth_data.organisation_id)
+        user_types=user_types, org_id=UUID(auth_data.organisation_id)
     )
 
 
@@ -103,7 +103,7 @@ def get_users(
 def get_user(
     user_id: UUID,
     db: Session = Depends(get_transactional_session),
-    auth_data: TokenData = Depends(check_user_auth),
+    auth_data: TokenData = Depends(check_admin_user_auth),
 ):
     service = UsersService(db)
     user = service.get_user_by_id(user_id, UUID(auth_data.organisation_id))
@@ -117,7 +117,7 @@ def update_user(
     user_id: UUID,
     data: UpdateUserRequestModel,
     db: Session = Depends(get_transactional_session),
-    auth_data: TokenData = Depends(check_user_auth),
+    auth_data: TokenData = Depends(check_admin_user_auth),
 ):
     service = UsersService(db)
     updated = service.update_user(user_id, data, UUID(auth_data.organisation_id))

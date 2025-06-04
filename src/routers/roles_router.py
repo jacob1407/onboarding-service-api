@@ -17,6 +17,7 @@ from ..db.db import get_transactional_session
 router = APIRouter()
 
 
+@router.post("", response_model=GetRolesResponseModel)
 @router.post("/", response_model=GetRolesResponseModel)
 def create_role(
     data: CreateRoleRequestModel,
@@ -27,6 +28,7 @@ def create_role(
     return service.create_role(data, UUID(auth_data.organisation_id))
 
 
+@router.get("", response_model=list[GetRolesResponseModel])
 @router.get("/", response_model=list[GetRolesResponseModel])
 def get_roles(
     db: Session = Depends(get_transactional_session),

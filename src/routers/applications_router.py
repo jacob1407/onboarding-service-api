@@ -14,6 +14,7 @@ from ..db.db import get_transactional_session
 router = APIRouter()
 
 
+@router.post("", response_model=GetApplicationResponseModel)
 @router.post("/", response_model=GetApplicationResponseModel)
 def create_application(
     data: CreateApplicationRequestModel,
@@ -24,6 +25,7 @@ def create_application(
     return service.create_application(data, UUID(auth_data.organisation_id))
 
 
+@router.get("", response_model=list[GetApplicationsResponseModel])
 @router.get("/", response_model=list[GetApplicationsResponseModel])
 def get_applications(
     db: Session = Depends(get_transactional_session),

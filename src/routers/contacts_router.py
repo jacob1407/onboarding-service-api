@@ -17,6 +17,7 @@ from ..db.db import get_transactional_session
 router = APIRouter()
 
 
+@router.post("", response_model=GetContactResponseModel)
 @router.post("/", response_model=GetContactResponseModel)
 def create_contact(
     data: CreateContactRequestModel,
@@ -27,6 +28,7 @@ def create_contact(
     return service.create_contact(data, UUID(auth_data.organisation_id))
 
 
+@router.get("", response_model=list[GetContactResponseModel])
 @router.get("/", response_model=list[GetContactResponseModel])
 def get_contacts(
     db: Session = Depends(get_transactional_session),

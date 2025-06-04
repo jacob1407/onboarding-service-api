@@ -22,6 +22,7 @@ from ..schemas.user_schema import (
 router = APIRouter()
 
 
+@router.get("", response_model=list[GetEmployeeResponseModel])
 @router.get("/", response_model=list[GetEmployeeResponseModel])
 def get_employees(
     db: Session = Depends(get_transactional_session),
@@ -31,6 +32,7 @@ def get_employees(
     return service.get_all_employees(UUID(auth_data.organisation_id))
 
 
+@router.post("", response_model=GetEmployeeResponseModel)
 @router.post("/", response_model=GetEmployeeResponseModel)
 def create_employee(
     data: CreateEmployeeRequestModel,

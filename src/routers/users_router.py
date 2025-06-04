@@ -26,6 +26,7 @@ router = APIRouter()
 
 
 @router.get("/employees", response_model=list[GetEmployeeResponseModel])
+@router.get("/employees/", response_model=list[GetEmployeeResponseModel])
 def get_employees(
     db: Session = Depends(get_transactional_session),
     auth_data: TokenData = Depends(check_admin_user_auth),
@@ -35,6 +36,7 @@ def get_employees(
 
 
 @router.post("/employees", response_model=GetEmployeeResponseModel)
+@router.post("/employees/", response_model=GetEmployeeResponseModel)
 def create_employee(
     data: CreateEmployeeRequestModel,
     db: Session = Depends(get_transactional_session),
@@ -77,6 +79,7 @@ def update_employee(
     return updated
 
 
+@router.post("", response_model=GetUserResponseModel)
 @router.post("/", response_model=GetUserResponseModel)
 def create_user(
     data: CreateUserRequestModel,
@@ -87,6 +90,7 @@ def create_user(
     return service.create_user(data, UUID(auth_data.organisation_id))
 
 
+@router.get("", response_model=list[GetUserResponseModel])
 @router.get("/", response_model=list[GetUserResponseModel])
 def get_users(
     user_types: list[UserType] | None = Query(default=None),

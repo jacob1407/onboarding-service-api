@@ -46,7 +46,11 @@ app.include_router(users_router, prefix="/users")
 app.include_router(onboarding_router, prefix="/onboarding")
 app.include_router(auth_router, prefix="/auth")
 
-origins = ["http://localhost:3000", "http://127.0.0.1:3000"]
+origins = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "https://onboarding-fe-dev.up.railway.app",
+]
 
 app.add_middleware(
     CORSMiddleware,

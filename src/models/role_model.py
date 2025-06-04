@@ -24,7 +24,6 @@ class RoleModel(Base):
     )
 
     name: Mapped[str] = mapped_column(String, nullable=False)
-    code: Mapped[str] = mapped_column(String, nullable=False)
     description: Mapped[str | None] = mapped_column(String, nullable=True)
 
     organisation_id: Mapped[PyUUID] = mapped_column(

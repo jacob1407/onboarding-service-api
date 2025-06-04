@@ -31,10 +31,7 @@ from src.models import (
 config = context.config
 
 # ✅ Load DB URL from environment before it's used
-DB_URL = (
-    f"postgresql://{os.getenv('DB_USER')}:{os.getenv('DB_PASS')}"
-    f"@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
-)
+DB_URL = os.getenv("DB_URL", "")
 
 # Inject DB URL into Alembic config
 config.set_main_option("sqlalchemy.url", DB_URL)

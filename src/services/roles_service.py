@@ -34,7 +34,6 @@ class RolesService:
         return GetRoleResponseModel(
             id=role.id,
             name=role.name,
-            code=role.code,
             applications=applications,
             description=role.description,
         )
@@ -68,7 +67,6 @@ class RolesService:
         return GetRoleResponseModel(
             id=role.id,
             name=role.name,
-            code=role.code,
             description=role.description,
             applications=applications,
         )
@@ -97,7 +95,6 @@ class RolesService:
         return GetRoleResponseModel(
             id=updated_role.id,
             name=updated_role.name,
-            code=updated_role.code,
             description=updated_role.description,
             applications=applications,
         )

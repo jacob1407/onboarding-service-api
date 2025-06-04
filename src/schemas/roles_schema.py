@@ -21,7 +21,6 @@ class CreateRoleRequestModel(BaseModel):
 class GetRolesResponseModel(BaseModel):
     id: UUID
     name: str
-    code: str
     description: str | None
 
     model_config = {"from_attributes": True}
@@ -30,7 +29,6 @@ class GetRolesResponseModel(BaseModel):
 class GetRoleResponseModel(BaseModel):
     id: UUID
     name: str
-    code: str
     description: str | None
     applications: List[GetApplicationsResponseModel]
 

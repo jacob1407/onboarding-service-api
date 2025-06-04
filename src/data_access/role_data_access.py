@@ -13,7 +13,6 @@ class RoleDataAccess:
     def create_role(self, role: CreateRoleRequestModel, org_id: UUID) -> RoleModel:
         role = RoleModel(
             name=role.name,
-            code=role.code,
             organisation_id=org_id,
             description=role.description,
         )

@@ -17,7 +17,6 @@ class ApplicationDataAccess:
         app = ApplicationModel(
             id=uuid.uuid4(),
             name=data.name,
-            code=to_snake_case(data.name),
             organisation_id=org_id,
             description=data.description,
         )
@@ -54,7 +53,6 @@ class ApplicationDataAccess:
             return None
 
         app.name = data.name
-        app.code = data.name.lower().replace(" ", "_")
         app.description = data.description
         return app
 

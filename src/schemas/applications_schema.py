@@ -10,11 +10,6 @@ class CreateApplicationRequestModel(BaseModel):
     description: Optional[str] = None
     contact_ids: list[UUID]
 
-    @computed_field
-    @property
-    def code(self) -> str:
-        return self.name.lower().replace(" ", "_")
-
 
 class GetApplicationResponseModel(BaseModel):
     id: UUID

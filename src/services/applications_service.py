@@ -34,7 +34,6 @@ class ApplicationService:
         return GetApplicationResponseModel(
             id=app.id,
             name=app.name,
-            code=app.code,
             description=app.description,
             contacts=contacts,
         )
@@ -65,7 +64,6 @@ class ApplicationService:
         return GetApplicationResponseModel(
             id=application.id,
             name=application.name,
-            code=application.code,
             description=application.description,
             contacts=contacts,
         )
@@ -100,7 +98,6 @@ class ApplicationService:
         return GetApplicationResponseModel(
             id=updated_application.id,
             name=updated_application.name,
-            code=updated_application.code,
             description=updated_application.description,
             contacts=contacts,
         )

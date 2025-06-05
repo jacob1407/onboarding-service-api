@@ -12,18 +12,19 @@ services:
       - pgdata:/var/lib/postgresql/data
 
   onboarding-service-api:
-    build: .
+    build:
+      dockerfile: Dockerfile.dev
+    image: onboarding-service-api:latest
     container_name: onboarding-service-api
     depends_on:
       - db
     environment:
-      DB_HOST: db
-      DB_PORT: 5432
-      DB_NAME: onboarding
-      DB_USER: myuser
-      DB_PASS: mypassword
+      DB_URL: postgresql://myuser:mypassword@db:5432/onboarding
+      PYTHONDONTWRITEBYTECODE: 1
+      PYTHONUNBUFFERED: 1
     ports:
       - "8080:8080"
+      - "5678:5678"  # Debug port
 
 volumes:
   pgdata:

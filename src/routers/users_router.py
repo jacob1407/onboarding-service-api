@@ -6,6 +6,8 @@ from ..schemas.employee_schema import GetEmployeeResponseModel
 
 
 from ..services.email_service import EmailService
+from ..models.organisation_model import OrganisationModel
+
 from ..enums.user_type import UserType
 from ..schemas.auth import (
     TokenData,

@@ -1,4 +1,5 @@
 from http import HTTPStatus
+import os
 from uuid import UUID
 from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
@@ -13,8 +14,7 @@ from ..enums.user_type import UserType
 from ..data_access.user_data_access import UserDataAccess
 from ..schemas.auth import TokenData
 
-# Secret key and algorithm
-SECRET_KEY = "b6gGfbOkANbDfjchsMNJSBx5spYGhJO3ii63Yw09M-NLyuUTNaadx-Ba35engczQpwsp4GfzF_udnMoUBtuI3g"  # replace with environment variable later
+SECRET_KEY = os.environ.get("SECRET_HASH_KEY", "")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 120
 

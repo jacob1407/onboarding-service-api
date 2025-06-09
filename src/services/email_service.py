@@ -1,3 +1,4 @@
+import os
 import httpx
 from sendgrid.helpers.mail import Mail, Email, To, Content
 
@@ -54,7 +55,7 @@ class EmailService:
         await self._send_email(to=contact.email, subject=subject, html_body=body)
 
     async def send_invite_email(self, user: GetUserResponseModel, token: str):
-        invite_link = f"http://localhost:3000/complete-invite?token={token}"
+        invite_link = f"{os.environ.get("FE_URL", "")}?token={token}"
 
         subject = "You're invited to join Access Manager"
         html_body = f"""

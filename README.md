@@ -4,6 +4,10 @@
 
 This application automates the employee onboarding process by streamlining application provisioning and access management. The system manages the end-to-end workflow of granting new employees access to the necessary applications and systems based on their assigned roles within an organization.
 
+## The Problem
+
+Onboarding employees can take too long due to not having the right access to applications needed to carry out work. The problem is usually to do with ownership - who is responsible for each application? This platform gives a central place to record this information and automates the process of access provisioning.
+
 ### Key Features
 
 - **Role-based Application Provisioning**: Automatically determines which applications a new employee needs access to based on their assigned role
@@ -15,7 +19,7 @@ This application automates the employee onboarding process by streamlining appli
 
 ### How It Works
 
-1. **Employee Setup**: New employees are added to the system with their role and organization
+1. **Employee Setup**: New employees are added to the system with their role
 2. **Onboarding Initiation**: Admins start the onboarding process for an employee
 3. **Application Discovery**: The system identifies all applications required for the employee's role
 4. **Request Distribution**: Automated emails are sent to application contacts requesting access provisioning
